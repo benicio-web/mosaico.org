@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///C:/Users/benic/Downloads/organograma-mosaico_9.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organograma — Igreja Mosaico</title>
+<link href="./Organograma — Igreja Mosaico - v1_files/css2" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b26;--bg3:#1e2535;--bg4:#252d3f;
+  --border:#2d3650;--border2:#3d4f70;
+  --text:#e8eaf2;--text2:#9ba3be;--text3:#6b7394;
+  --accent:#4f6ef7;--accent2:#3a57e8;--accent-glow:rgba(79,110,247,0.15);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.12);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.12);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.12);
+  --radius:10px;--radius-lg:16px;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+/* Mobile touch fix */
+* { -webkit-tap-highlight-color: rgba(79,110,247,0.2); touch-action: manipulation; }
+button, .node-card, .slot, .pos-item, .toggle-btn, .modal-close, .btn {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(79,110,247,0.3);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700}
+.header-actions{display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font)}
+.btn:hover{background:var(--bg4);border-color:var(--border2)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+.btn-sm{padding:5px 10px;font-size:12px}
+
+.toolbar{display:flex;align-items:center;gap:8px;padding:.75rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.toolbar-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:280px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3)}
+.search-input{width:100%;padding:7px 10px 7px 32px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font);outline:none}
+.search-input:focus{border-color:var(--accent)}
+.legend{display:flex;align-items:center;gap:14px;margin-left:auto}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-bottom:1px solid var(--border)}
+.stat-card{padding:.9rem 1rem;border-right:1px solid var(--border);text-align:center}
+.stat-card:last-child{border-right:none}
+.stat-num{font-size:22px;font-weight:600;color:var(--text)}
+.stat-label{font-size:10px;color:var(--text3);margin-top:2px}
+
+#canvas-wrap{overflow:auto;padding:2rem;min-height:calc(100vh - 160px);cursor:grab;user-select:none;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+#canvas-wrap.panning{cursor:grabbing}
+#chart-root{display:inline-flex;flex-direction:column;align-items:center;min-width:100%;transform-origin:top center;transition:transform .2s}
+
+.tree-branch{display:flex;flex-direction:column;align-items:center;position:relative}
+.tree-children{display:flex;gap:20px;padding-top:20px;position:relative;justify-content:center}
+.tree-children::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--border2)}
+.tree-children>.tree-branch::before{content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);height:20px;width:1px;background:var(--border2)}
+.tree-connector-down{width:1px;height:20px;background:var(--border2)}
+
+.node-card{position:relative;width:200px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:all .2s;flex-shrink:0}
+.node-card:hover{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.node-card.root-node{width:260px}
+.node-card.wing-node{width:220px;border-color:var(--border2)}
+.node-health-bar{height:3px;border-radius:var(--radius) var(--radius) 0 0}
+.health-green .node-health-bar{background:var(--green)}
+.health-amber .node-health-bar{background:var(--amber)}
+.health-red .node-health-bar{background:var(--red)}
+.node-head{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 12px 8px}
+.node-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.node-leader{font-size:11px;color:var(--text2);margin-top:2px}
+.node-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:2px 6px;border-radius:4px;margin-top:4px;display:inline-block}
+.tag-exec{background:rgba(79,110,247,.15);color:#7b9bfa}
+.tag-min{background:rgba(34,197,94,.12);color:#4ade80}
+.tag-advisory{background:rgba(245,158,11,.12);color:#fbbf24}
+.health-badge{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px}
+.health-green .health-badge{background:var(--green-bg);box-shadow:0 0 0 1px var(--green)}
+.health-amber .health-badge{background:var(--amber-bg);box-shadow:0 0 0 1px var(--amber)}
+.health-red .health-badge{background:var(--red-bg);box-shadow:0 0 0 1px var(--red)}
+.node-body{padding:0 12px 10px;border-top:1px solid var(--border)}
+.slot-wrap{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.slot{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);cursor:pointer;transition:all .15s}
+.slot:hover{transform:scale(1.2)}
+.slot.filled{background:var(--accent);border-color:var(--accent)}
+.slot.vacant{border-style:dashed;border-color:var(--text3)}
+.slot-label{font-size:10px;color:var(--text3);margin-top:5px}
+.node-footer{display:flex;align-items:center;justify-content:flex-end;padding:6px 12px;border-top:1px solid var(--border)}
+.toggle-btn{width:20px;height:20px;border-radius:4px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:10px;color:var(--text2)}
+.toggle-btn:hover{background:var(--bg4)}
+
+/* MODALS */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;animation:slideUp .2s ease}
+.modal-lg{max-width:680px}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)}
+.modal-title{font-size:16px;font-weight:600}
+.modal-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px;transition:all .15s}
+.modal-close:hover{background:var(--bg4)}
+.modal-body{padding:1.25rem 1.5rem}
+.modal-section{margin-bottom:1.25rem}
+.modal-section:last-child{margin-bottom:0}
+.ms-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.5rem}
+.ms-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.ms-list li{font-size:13px;color:var(--text2);padding-left:12px;position:relative}
+.ms-list li::before{content:'•';position:absolute;left:0;color:var(--accent)}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap}
+.tag{padding:3px 10px;border-radius:20px;font-size:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;padding:1rem 1.5rem;border-top:1px solid var(--border);flex-wrap:wrap}
+
+/* POSITIONS GRID — clicável */
+.positions-grid{display:flex;gap:8px;flex-wrap:wrap}
+.pos-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;min-width:110px;cursor:pointer;transition:all .15s}
+.pos-item:hover{border-color:var(--accent);background:var(--accent-glow)}
+.pos-item.filled{border-color:var(--accent);background:var(--accent-glow)}
+.pos-item .pos-name{font-weight:500;color:var(--text);margin-bottom:2px}
+.pos-item .pos-status{font-size:11px;color:var(--text3)}
+.pos-item.filled .pos-status{color:var(--accent)}
+.pos-item .pos-vols{font-size:10px;color:var(--text3);margin-top:3px}
+.pos-item .pos-successor{font-size:11px;color:var(--amber);margin-top:3px}
+.pos-item-hint{font-size:10px;color:var(--text3);font-style:italic;margin-top:6px}
+
+/* VOLUNTEER LIST */
+.vol-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.vol-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px}
+.vol-name{color:var(--text)}
+.vol-tags{display:flex;gap:4px}
+.vol-tag-min{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--accent-glow);color:#7b9bfa;border:1px solid rgba(79,110,247,.3)}
+.vol-remove{width:20px;height:20px;border-radius:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.vol-remove:hover{color:var(--red)}
+.vol-add-row{display:flex;gap:8px;margin-top:8px}
+
+/* FORM */
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.form-input,.form-textarea,.form-select{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border .15s}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-select option{background:var(--bg3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* PRINT MODAL */
+.print-opt{display:flex;flex-direction:column;gap:10px;padding:1rem 0}
+.print-opt label{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:14px;transition:all .15s}
+.print-opt label:hover{border-color:var(--border2);background:var(--bg3)}
+.print-opt input[type=radio]{accent-color:var(--accent);width:15px;height:15px}
+
+/* ZOOM */
+.zoom-ctrl{position:fixed;bottom:1.5rem;right:1.5rem;display:flex;flex-direction:column;gap:4px;z-index:50}
+.zoom-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.zoom-btn:hover{background:var(--bg3)}
+.zoom-level{font-size:11px;color:var(--text3);text-align:center;font-family:var(--mono)}
+
+@media(max-width:640px){
+  header{padding:.75rem 1rem;flex-wrap:wrap;gap:8px}
+  .logo span{font-size:13px}
+  .header-actions{gap:6px}
+  .header-actions .btn span{display:none}
+  .btn{padding:8px 10px;min-height:40px}
+  .toolbar{padding:.6rem 1rem;gap:6px}
+  .legend{display:none}
+  .stats-bar{grid-template-columns:repeat(3,1fr)}
+  .stat-card:nth-child(3){border-right:none}
+  .stat-card:nth-child(4){border-top:1px solid var(--border)}
+  .stat-num{font-size:18px}
+  .node-card{width:130px}
+  .node-card.root-node{width:160px}
+  .node-card.wing-node{width:145px}
+  .node-title{font-size:11px}
+  .node-leader{font-size:10px}
+  .node-tag{font-size:8px}
+  .tree-children{gap:8px}
+  .tree-connector-down{height:16px}
+  .toggle-btn{width:32px;height:32px;font-size:13px}
+  .slot{width:22px;height:22px;border-radius:5px}
+  .overlay{padding:.5rem;align-items:flex-end}
+  .modal{max-height:85vh;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+  .form-row{grid-template-columns:1fr}
+  .zoom-btn{width:44px;height:44px;font-size:20px}
+  .zoom-ctrl{bottom:1rem;right:1rem;gap:6px}
+}
+
+/* PRINT */
+@media print{
+  header,div.toolbar,.stats-bar,.zoom-ctrl,.overlay{display:none!important}
+  body{background:#fff!important;color:#000!important}
+  #canvas-wrap{overflow:visible!important;padding:0!important;cursor:default!important}
+  #chart-root{transform:none!important;min-width:auto!important}
+  .node-card{background:#fff!important;border:1.5px solid #ccc!important;break-inside:avoid;color:#000!important}
+  .node-title{color:#000!important}.node-leader{color:#444!important}.slot-label{color:#666!important}
+  .node-head,.node-body,.node-footer{border-color:#ddd!important}
+  .tree-connector-down,.tree-children::before,.tree-children>.tree-branch::before{background:#999!important}
+  .health-green .node-health-bar{background:#16a34a!important}
+  .health-amber .node-health-bar{background:#d97706!important}
+  .health-red .node-health-bar{background:#dc2626!important}
+  .toggle-btn,.health-badge{display:none!important}
+  .print-header{display:block!important}
+  body.print-fit #canvas-wrap{display:flex;justify-content:center}
+  body.print-fit #chart-root{transform-origin:top center}
+}
+.print-header{display:none;text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #000}
+.print-header h1{font-size:20px;font-weight:700;color:#000}
+.print-header p{font-size:11px;color:#666;margin-top:3px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">M</div>
+    <span>Igreja Mosaico — Organograma</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn" onclick="openPrintModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      <span>Imprimir</span>
+    </button>
+    <button class="btn" onclick="exportData()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Exportar JSON</span>
+    </button>
+    <button class="btn btn-primary" onclick="openAddModal(null)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>Novo Nó</span>
+    </button>
+  </div>
+</header>
+
+<div class="stats-bar" id="stats-bar">
+    <div class="stat-card"><div class="stat-num">29</div><div class="stat-label">Ministérios</div></div>
+    <div class="stat-card"><div class="stat-num">33/83</div><div class="stat-label">Posições ocupadas</div></div>
+    <div class="stat-card"><div class="stat-num">40%</div><div class="stat-label">Headcount</div></div>
+    <div class="stat-card"><div class="stat-num">50</div><div class="stat-label">Voluntários únicos</div></div>
+    <div class="stat-card"><div class="stat-num" style="font-size:18px">—</div><div class="stat-label">Orçamento/mês</div></div>
+  </div>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+    <input class="search-input" placeholder="Buscar ministério, líder ou voluntário…" id="search-input" oninput="renderTree()">
+  </div>
+  <div class="toolbar-sep"></div>
+  <button class="btn" onclick="expandAll()">Expandir tudo</button>
+  <button class="btn" onclick="collapseAll()">Recolher tudo</button>
+  <div class="legend">
+    <div class="legend-item"><div class="dot" style="background:var(--green)"></div> Saudável</div>
+    <div class="legend-item"><div class="dot" style="background:var(--amber)"></div> Atenção</div>
+    <div class="legend-item"><div class="dot" style="background:var(--red)"></div> Crítico</div>
+    <div class="legend-item"><div class="slot filled" style="display:inline-block;cursor:default"></div> Ocupada</div>
+    <div class="legend-item"><div class="slot vacant" style="display:inline-block;cursor:default"></div> Vaga</div>
+  </div>
+</div>
+
+<div id="canvas-wrap">
+  <div class="print-header">
+    <h1>Igreja Mosaico — Organograma</h1>
+    <p id="print-date"></p>
+  </div>
+  <div id="chart-root" style="transform: scale(1);"><div class="tree-branch"><div class="node-card health-green root-node" data-id="1"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Conselho</div>
+    
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-body"><div class="slot-wrap"><div class="slot filled" title="Pastor Presidente — clique para detalhes"></div><div class="slot filled" title="Pastor Auxiliar — clique para detalhes"></div><div class="slot filled" title="Presbítero — clique para detalhes"></div><div class="slot filled" title="Presbítero — clique para detalhes"></div><div class="slot filled" title="Presbítero — clique para detalhes"></div><div class="slot filled" title="Presbítero — clique para detalhes"></div><div class="slot filled" title="Presbítero — clique para detalhes"></div></div><div class="slot-label">7/7 posições</div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Recolher">▼</button></div></div><div class="tree-connector-down"></div><div class="tree-children"><div class="tree-branch"><div class="node-card health-green" data-id="ps"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Pastor Sênior</div>
+    <div class="node-leader">Douglas Queiroz</div>
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-body"><div class="slot-wrap"><div class="slot filled" title="Pastor Sênior — clique para detalhes"></div><div class="slot filled" title="Pastor Auxiliar — clique para detalhes"></div></div><div class="slot-label">2/2 posições</div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Recolher">▼</button></div></div><div class="tree-connector-down"></div><div class="tree-children"><div class="tree-branch"><div class="node-card health-green wing-node" data-id="exec"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Gestão Executiva</div>
+    
+    <span class="node-tag tag-exec">Asa Executiva</span>
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Recolher">▼</button></div></div><div class="tree-connector-down"></div><div class="tree-children"><div class="tree-branch"><div class="node-card health-green" data-id="gestao"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Gestão</div>
+    <div class="node-leader">Benicio Cruz</div>
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-body"><div class="slot-wrap"><div class="slot filled" title="Zelador — clique para detalhes"></div><div class="slot vacant" title="Aux. Administrativo / Secretária — clique para detalhes"></div><div class="slot filled" title="Escritório Contabilidade — clique para detalhes"></div></div><div class="slot-label">2/3 posições</div></div><div class="node-footer"><span></span></div></div></div><div class="tree-branch"><div class="node-card health-green" data-id="fin"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Finanças</div>
+    <div class="node-leader">Diego Bizzo</div>
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span></div></div></div><div class="tree-branch"><div class="node-card health-green" data-id="pessoas"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Pessoas &amp; Processos</div>
+    <div class="node-leader">Benicio Cruz</div>
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-body"><div class="slot-wrap"><div class="slot filled" title="Pessoas — clique para detalhes"></div><div class="slot filled" title="Processos — clique para detalhes"></div><div class="slot filled" title="Desenvolvimento — clique para detalhes"></div></div><div class="slot-label">3/3 posições</div></div><div class="node-footer"><span></span></div></div></div></div></div><div class="tree-branch"><div class="node-card health-green wing-node" data-id="min"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Gestão Ministerial</div>
+    
+    <span class="node-tag tag-min">Asa Ministerial</span>
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Recolher">▼</button></div></div><div class="tree-connector-down"></div><div class="tree-children"><div class="tree-branch"><div class="node-card health-green" data-id="comunhao"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Comunhão</div>
+    
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Expandir">▶</button></div></div></div><div class="tree-branch"><div class="node-card health-green" data-id="congregacao"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Congregação</div>
+    
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Expandir">▶</button></div></div></div><div class="tree-branch"><div class="node-card health-green" data-id="servico"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Serviço</div>
+    
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Expandir">▶</button></div></div></div><div class="tree-branch"><div class="node-card health-green" data-id="formacao"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Formação</div>
+    
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Expandir">▶</button></div></div></div><div class="tree-branch"><div class="node-card health-green" data-id="familia"><div class="node-health-bar"></div><div class="node-head"><div>
+    <div class="node-title">Família</div>
+    
+    
+  </div><div class="health-badge" title="Saúde: green"></div></div><div class="node-footer"><span></span><button class="toggle-btn" title="Expandir">▶</button></div></div></div></div></div></div></div></div></div></div>
+</div>
+
+<div class="zoom-ctrl">
+  <button class="zoom-btn" onclick="zoom(0.1)">+</button>
+  <div class="zoom-level" id="zoom-label">100%</div>
+  <button class="zoom-btn" onclick="zoom(-0.1)">−</button>
+  <button class="zoom-btn" style="font-size:12px" onclick="resetZoom()">⊡</button>
+</div>
+
+<!-- PRINT MODAL -->
+<div class="overlay" id="print-overlay" style="display:none" onclick="closeModal(&#39;print-overlay&#39;)">
+  <div class="modal" style="max-width:420px" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">Opções de Impressão</div>
+      <button class="modal-close" onclick="closeModal(&#39;print-overlay&#39;)">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ms-label">Formato</div>
+      <div class="print-opt">
+        <label><input type="radio" name="pmode" value="normal" checked=""> Normal — múltiplas páginas se necessário</label>
+        <label><input type="radio" name="pmode" value="fit"> Página única — reduz escala para caber em uma folha</label>
+      </div>
+      <div class="ms-label" style="margin-top:1rem">Estado do organograma</div>
+      <div class="print-opt">
+        <label><input type="radio" name="pstate" value="current" checked=""> Como está na tela</label>
+        <label><input type="radio" name="pstate" value="expanded"> Expandir tudo antes de imprimir</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal(&#39;print-overlay&#39;)">Cancelar</button>
+      <button class="btn btn-primary" onclick="executePrint()">Imprimir</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW MODAL (ministério) -->
+<div class="overlay" id="view-overlay" style="display: none;" onclick="closeModal(&#39;view-overlay&#39;)">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="vm-title">Conselho</div>
+        <div class="modal-subtitle" id="vm-subtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal(&#39;view-overlay&#39;)">✕</button>
+    </div>
+    <div class="modal-body" id="vm-body">
+    <div class="modal-section" style="display:flex;justify-content:space-between;align-items:center">
+      <div><div class="ms-label">Saúde</div><div style="margin-top:4px;font-size:14px">🟢 Saudável</div></div>
+      <div><div class="ms-label">Orçamento</div><div style="margin-top:4px;font-size:14px;font-family:var(--mono)">—</div></div>
+    </div>
+    <div class="modal-section">
+    <div class="ms-label">Atividades Principais</div>
+    <ul class="ms-list"><li>Governança da igreja</li><li>Decisões estratégicas e doutrinais</li><li>Supervisão pastoral</li></ul>
+  </div><div class="modal-section">
+    <div class="ms-label">Posições — clique em uma para ver o Job Description</div>
+    <div class="positions-grid">
+      
+        <div class="pos-item filled" onclick="openPosModal(&#39;1&#39;,0)">
+          <div class="pos-name">Pastor Presidente</div>
+          <div class="pos-status">Ocupada</div>
+          <div class="pos-vols">1 voluntário(s)</div>
+          
+        </div>
+        <div class="pos-item filled" onclick="openPosModal(&#39;1&#39;,1)">
+          <div class="pos-name">Pastor Auxiliar</div>
+          <div class="pos-status">Ocupada</div>
+          <div class="pos-vols">1 voluntário(s)</div>
+          
+        </div>
+        <div class="pos-item filled" onclick="openPosModal(&#39;1&#39;,2)">
+          <div class="pos-name">Presbítero</div>
+          <div class="pos-status">Ocupada</div>
+          <div class="pos-vols">1 voluntário(s)</div>
+          
+        </div>
+        <div class="pos-item filled" onclick="openPosModal(&#39;1&#39;,3)">
+          <div class="pos-name">Presbítero</div>
+          <div class="pos-status">Ocupada</div>
+          <div class="pos-vols">1 voluntário(s)</div>
+          
+        </div>
+        <div class="pos-item filled" onclick="openPosModal(&#39;1&#39;,4)">
+          <div class="pos-name">Presbítero</div>
+          <div class="pos-status">Ocupada</div>
+          <div class="pos-vols">1 voluntário(s)</div>
+          
+        </div>
+        <div class="pos-item filled" onclick="openPosModal(&#39;1&#39;,5)">
+          <div class="pos-name">Presbítero</div>
+          <div class="pos-status">Ocupada</div>
+          <div class="pos-vols">1 voluntário(s)</div>
+          
+        </div>
+        <div class="pos-item filled" onclick="openPosModal(&#39;1&#39;,6)">
+          <div class="pos-name">Presbítero</div>
+          <div class="pos-status">Ocupada</div>
+          <div class="pos-vols">1 voluntário(s)</div>
+          
+        </div>
+    </div>
+    <div class="pos-item-hint">Clique em qualquer posição para ver detalhes, adicionar voluntários e editar o Job Description.</div>
+  </div><div class="modal-section">
+    <div class="ms-label">Competências do Ministério</div>
+    <div class="tag-row"><span class="tag">Liderança pastoral</span><span class="tag">Teologia</span><span class="tag">Governança</span></div>
+  </div></div>
+    <div class="modal-footer">
+      <button class="btn btn-sm" id="vm-add-child-btn">+ Filho</button>
+      <button class="btn btn-sm" id="vm-edit-btn">Editar nó</button>
+      <button class="btn btn-sm" style="color:var(--red)" id="vm-delete-btn">Remover</button>
+    </div>
+  </div>
+</div>
+
+<!-- POSITION (Job Description) MODAL -->
+<div class="overlay" id="pos-overlay" style="display: none;" onclick="closeModal(&#39;pos-overlay&#39;)">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="pm-title">Presbítero</div>
+        <div class="modal-subtitle" id="pm-subtitle">Conselho · Ocupada</div>
+      </div>
+      <button class="modal-close" onclick="closeModal(&#39;pos-overlay&#39;)">✕</button>
+    </div>
+    <div class="modal-body" id="pm-body">
+    
+    <div class="modal-section" style="color:var(--text3);font-size:13px;font-style:italic">Nenhum Job Description cadastrado. Clique em "Editar posição" para adicionar.</div><div class="modal-section">
+    <div class="ms-label">Voluntários nesta posição (1)</div>
+    <div class="vol-list">
+      <div class="vol-item"><span class="vol-name">Vinicius Queiroz</span></div></div>
+  </div></div>
+    <div class="modal-footer">
+      <button class="btn btn-sm" id="pm-edit-btn">Editar posição</button>
+    </div>
+  </div>
+</div>
+
+<!-- POSITION EDIT MODAL -->
+<div class="overlay" id="pos-edit-overlay" style="display: none;" onclick="closeModal(&#39;pos-edit-overlay&#39;)">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="pem-title">Editar: Presbítero</div>
+      <button class="modal-close" onclick="closeModal(&#39;pos-edit-overlay&#39;)">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pem-node-id" value="1">
+      <input type="hidden" id="pem-pos-idx" value="5">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome da Posição *</label>
+          <input class="form-input" id="pem-name" placeholder="Ex: Fotógrafo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="pem-filled">
+            <option value="true">Ocupada</option>
+            <option value="false">Vaga</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Responsabilidades / Job Description</label>
+        <textarea class="form-textarea" id="pem-jd" placeholder="Descreva as responsabilidades desta posição…" style="min-height:100px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Competências Necessárias (separadas por vírgula)</label>
+        <input class="form-input" id="pem-skills" placeholder="Ex: Fotografia, Edição, Agilidade">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Sucessor em Potencial</label>
+          <input class="form-input" id="pem-successor" placeholder="Nome">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Carga horária (h/sem)</label>
+          <input class="form-input" id="pem-hours" type="number" placeholder="Ex: 4">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Voluntários nesta posição</label>
+        <div id="pem-vols-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"><div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;"><span style="font-size:13px">Vinicius Queiroz</span><button onclick="removePosVol(0)" class="vol-remove" title="Remover">✕</button></div></div>
+        <div class="vol-add-row">
+          <input class="form-input" id="pem-vol-input" placeholder="Nome do voluntário" style="flex:1">
+          <button class="btn btn-sm" onclick="addVolunteerToPosForm()">+ Adicionar</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal(&#39;pos-edit-overlay&#39;)">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePosEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- NODE ADD/EDIT MODAL -->
+<div class="overlay" id="edit-overlay" style="display:none" onclick="closeModal(&#39;edit-overlay&#39;)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="em-title">Novo Ministério</div>
+      <button class="modal-close" onclick="closeModal(&#39;edit-overlay&#39;)">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="em-id">
+      <input type="hidden" id="em-parent">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome *</label>
+          <input class="form-input" id="em-name" placeholder="Ex: Comunicação">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Líder</label>
+          <input class="form-input" id="em-leader" placeholder="Nome do líder">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo de nó</label>
+        <select class="form-select" id="em-type">
+          <option value="">Ministério / Departamento</option>
+          <option value="exec">Asa Executiva</option>
+          <option value="min">Asa Ministerial</option>
+          <option value="advisory">Comitê / Assessoria</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Atividades Principais (uma por linha)</label>
+        <textarea class="form-textarea" id="em-activities" placeholder="Governança
+Decisões estratégicas"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Competências (separadas por vírgula)</label>
+        <input class="form-input" id="em-skills" placeholder="Liderança, Gestão">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Orçamento Mensal (R$)</label>
+          <input class="form-input" id="em-budget" type="number" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Saúde</label>
+          <select class="form-select" id="em-health">
+            <option value="green">🟢 Saudável</option>
+            <option value="amber">🟡 Atenção</option>
+            <option value="red">🔴 Crítico</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Posições (adicione aqui; detalhes via clique no card)</label>
+        <div id="positions-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
+        <button class="btn btn-sm" type="button" onclick="addPositionRow()">+ Adicionar posição</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal(&#39;edit-overlay&#39;)">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNode()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+let data = {
+  id:'1',name:'Conselho',leader:'',
+  health:'green',budget:0,type:'',
+  activities:['Governança da igreja','Decisões estratégicas e doutrinais','Supervisão pastoral'],
+  skills:['Liderança pastoral','Teologia','Governança'],
+  positions:[
+    {name:'Pastor Presidente',filled:true,successor:'',jd:'',skills:[],volunteers:['Douglas Queiroz'],hours:0},
+    {name:'Pastor Auxiliar',filled:true,successor:'',jd:'',skills:[],volunteers:['João Marcus'],hours:0},
+    {name:'Presbítero',filled:true,successor:'',jd:'',skills:[],volunteers:['Diego Bizzo'],hours:0},
+    {name:'Presbítero',filled:true,successor:'',jd:'',skills:[],volunteers:['Edu Braga'],hours:0},
+    {name:'Presbítero',filled:true,successor:'',jd:'',skills:[],volunteers:['Roberto Lacerda'],hours:0},
+    {name:'Presbítero',filled:true,successor:'',jd:'',skills:[],volunteers:['Vinicius Queiroz'],hours:0},
+    {name:'Presbítero',filled:true,successor:'',jd:'',skills:[],volunteers:['Fernando Camargo'],hours:0}
+  ],
+  children:[
+    {
+      id:'ps',name:'Pastor Sênior',leader:'Douglas Queiroz',
+      health:'green',budget:0,type:'',
+      activities:['Direção espiritual e estratégica','Supervisão das duas asas'],
+      skills:['Pregação','Liderança','Visão estratégica'],
+      positions:[
+        {name:'Pastor Sênior',filled:true,successor:'',jd:'',skills:[],volunteers:['Douglas Queiroz'],hours:40},
+        {name:'Pastor Auxiliar',filled:true,successor:'',jd:'',skills:[],volunteers:['João Marcus'],hours:40}
+      ],
+      children:[
+        {
+          id:'exec',name:'Gestão Executiva',leader:'',health:'green',budget:0,type:'exec',
+          activities:['Coordenação da asa executiva','Infraestrutura e processos'],skills:['Gestão','Liderança executiva'],
+          positions:[],
+          children:[
+            {
+              id:'gestao',name:'Gestão',leader:'Benicio Cruz',health:'green',budget:0,type:'',
+              activities:['Infraestrutura','Controles internos','Administração estratégica'],
+              skills:['Administração','Controles internos'],
+              positions:[
+                {name:'Zelador',filled:true,successor:'',jd:'',skills:[],volunteers:['Iracema'],hours:0},
+                {name:'Aux. Administrativo / Secretária',filled:false,successor:'',jd:'',skills:[],volunteers:[],hours:0},
+                {name:'Escritório Contabilidade',filled:true,successor:'',jd:'Serviço contábil externo.',skills:[],volunteers:['Externo'],hours:0}
+              ],children:[]
+            },
+            {
+              id:'fin',name:'Finanças',leader:'Diego Bizzo',health:'green',budget:0,type:'',
+              activities:['Tesouraria','Planejamento financeiro','Prestação de contas'],
+              skills:['Contabilidade','Gestão financeira','Excel'],
+              positions:[],children:[]
+            },
+            {
+              id:'pessoas',name:'Pessoas & Processos',leader:'Benicio Cruz',health:'green',budget:0,type:'',
+              activities:['Capacitação de pessoas','Gerenciamento de voluntários','Melhoria de processos'],
+              skills:['RH','Gestão de pessoas'],
+              positions:[
+                {name:'Pessoas',filled:true,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                {name:'Processos',filled:true,successor:'',jd:'',skills:[],volunteers:['Jésica'],hours:0},
+                {name:'Desenvolvimento',filled:true,successor:'',jd:'',skills:[],volunteers:['Clara'],hours:0}
+              ],children:[]
+            }
+          ]
+        },
+        {
+          id:'min',name:'Gestão Ministerial',leader:'',health:'green',budget:0,type:'min',
+          activities:['Coordenação da asa ministerial','Integração entre ministérios'],skills:['Liderança pastoral','Gestão ministerial'],
+          positions:[],
+          children:[
+            {
+              id:'comunhao',name:'Comunhão',leader:'',health:'green',budget:0,type:'',
+              activities:['Âncora','CORE','Pequenos Grupos'],skills:['Hospitalidade','Liderança de grupos','Pastoral'],
+              positions:[],
+              children:[
+                {
+                  id:'ancora',name:'Âncora',leader:'Clara / Nicolas',health:'green',budget:0,type:'',
+                  activities:['Ambiente de integração de novos membros'],skills:['Hospitalidade','Acolhimento'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'core',name:'CORE',leader:'Renan / Ana Bia',health:'green',budget:0,type:'',
+                  activities:['Grupo de relacionamento e discipulado'],skills:['Discipulado','Relacionamento'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'pgs',name:'Pequenos Grupos',leader:'TBD',health:'amber',budget:0,type:'',
+                  activities:['Coordenação e suporte dos PGs','Formação de novos líderes de PG'],skills:['Liderança','Discipulado','Gestão de grupos'],
+                  positions:[
+                    {name:'PG Icaraí 01',filled:true,successor:'',jd:'',skills:[],volunteers:['André Costa'],hours:0},
+                    {name:'PG Icaraí 02',filled:true,successor:'',jd:'',skills:[],volunteers:['Alexandre','Joelma'],hours:0},
+                    {name:'PG Icaraí 03',filled:true,successor:'',jd:'',skills:[],volunteers:['Fernando','Priscila'],hours:0},
+                    {name:'PG Icaraí 04',filled:true,successor:'',jd:'',skills:[],volunteers:['Paulo Accioly','Livia'],hours:0},
+                    {name:'PG Santa Rosa 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Ferraz','Roberta'],hours:0},
+                    {name:'PG Santa Rosa 02',filled:false,successor:'',jd:'',skills:[],volunteers:[],hours:0},
+                    {name:'PG Pendotiba 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Otavio','Roberto'],hours:0},
+                    {name:'PG RO 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Oscar','Aline'],hours:0},
+                    {name:'PG RO 2',filled:true,successor:'',jd:'',skills:[],volunteers:['Gustavo','Michele'],hours:0},
+                    {name:'PG RO 3',filled:true,successor:'',jd:'',skills:[],volunteers:['Liandro','Tereza'],hours:0},
+                    {name:'PG RO 4',filled:true,successor:'',jd:'',skills:[],volunteers:['Diego','Tracy'],hours:0},
+                    {name:'PG RO 5 (Interinos)',filled:true,successor:'',jd:'',skills:[],volunteers:['Liandro','Tereza'],hours:0},
+                    {name:'PG RO 6 Domingos',filled:true,successor:'',jd:'',skills:[],volunteers:['Flávia Saboya','Marcão'],hours:0},
+                    {name:'PG São Francisco 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Alexandre','Fernanda'],hours:0},
+                    {name:'PG Alcantara/Trindade 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Staney','Isabelle','Romeu','Thays'],hours:0},
+                    {name:'PG Itaipuaçu 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Marcelo','Raphaela'],hours:0},
+                    {name:'PG Adolescentes 01 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Gabriel Queiroz','Vitória Costa','Nicolas','Clara'],hours:0},
+                    {name:'PG Adolescentes 02 - Icaraí',filled:true,successor:'',jd:'',skills:[],volunteers:['Matheus','Julia Ferraz','Daniel Paixão','Bia Medeiros'],hours:0},
+                    {name:'PG Jovens 01 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Lucas Gallo'],hours:0},
+                    {name:'PG Jovens 02 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Mateus Rodrigues','Rebeca'],hours:0}
+                  ],children:[]
+                }
+              ]
+            },
+            {
+              id:'congregacao',name:'Congregação',leader:'',health:'green',budget:0,type:'',
+              activities:['Gestão de Culto','Música','Mídia','Áudio','Comunicação'],skills:['Música','Design','Comunicação','Áudio'],
+              positions:[],
+              children:[
+                {
+                  id:'gestao-culto',name:'Gestão de Culto',leader:'Benicio Cruz',health:'green',budget:0,type:'',
+                  activities:['Coordenação da experiência do culto'],skills:['Liderança','Gestão de eventos','Hospitalidade'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'musica',name:'Música',leader:'Edu Braga',health:'green',budget:0,type:'',
+                  activities:['Direção musical','Ensaios','Repertório'],skills:['Musicalidade','Regência','Liderança'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'midia',name:'Mídia',leader:'Fabricio Reis',health:'green',budget:0,type:'',
+                  activities:['Produção de vídeo','Transmissão ao vivo','Conteúdo visual'],skills:['Edição de vídeo','Streaming','Design'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'audio',name:'Áudio',leader:'Marcelo Castro',health:'green',budget:0,type:'',
+                  activities:['Operação de som','Manutenção de equipamentos'],skills:['Áudio','Pro Tools','Eletrônica'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'midia-fotos',name:'Mídia (Fotos)',leader:'Ed Medeiros',health:'green',budget:0,type:'',
+                  activities:['Cobertura fotográfica dos cultos e eventos'],skills:['Fotografia','Lightroom','Edição'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'comunicacao',name:'Comunicação',leader:'Edu Braga',health:'green',budget:0,type:'',
+                  activities:['Redes sociais','Design','Conteúdo — Janela 30/30'],skills:['Design gráfico','Social media','Copywriting'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                }
+              ]
+            },
+            {
+              id:'servico',name:'Serviço',leader:'',health:'green',budget:0,type:'',
+              activities:['Conectores','Segurança e Apoio','Capelania e Visitação'],skills:['Hospitalidade','Segurança','Cuidado pastoral'],
+              positions:[],
+              children:[
+                {
+                  id:'conectores',name:'Conectores',leader:'Flavia Saboya',health:'green',budget:0,type:'',
+                  activities:['Recepção e conexão de visitantes'],skills:['Hospitalidade','Comunicação','Acolhimento'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'seguranca',name:'Segurança e Apoio',leader:'Felix',health:'green',budget:0,type:'',
+                  activities:['Segurança nos cultos','Apoio operacional'],skills:['Segurança','Logística','Atenção'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'capelania',name:'Capelania e Visitação',leader:'Fernando Camargo',health:'green',budget:0,type:'',
+                  activities:['Visitação hospitalar','Acompanhamento de luto','Cuidado pastoral'],skills:['Pastoral','Empatia','Escuta ativa'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                }
+              ]
+            },
+            {
+              id:'formacao',name:'Formação',leader:'',health:'green',budget:0,type:'',
+              activities:['Ensino','Mosaico Kids'],skills:['Pedagogia','Discipulado','Teologia'],
+              positions:[],
+              children:[
+                {
+                  id:'ensino',name:'Ensino',leader:'João Marcus',health:'green',budget:0,type:'',
+                  activities:['Ensino Dominical','DNA','Desenvolvimento de líderes'],skills:['Teologia','Didática','Pregação'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'kids',name:'Mosaico Kids',leader:'Kellyd Queiroz',health:'green',budget:0,type:'',
+                  activities:['Ministério infantil','Professores','Eventos kids'],skills:['Pedagogia','Criatividade','Liderança'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                }
+              ]
+            },
+            {
+              id:'familia',name:'Família',leader:'',health:'green',budget:0,type:'',
+              activities:['Homens','Mulheres','Casais'],skills:['Aconselhamento','Pastoral familiar','Liderança'],
+              positions:[],
+              children:[
+                {
+                  id:'homens',name:'Homens',leader:'TBD',health:'amber',budget:0,type:'',
+                  activities:['Ministério de homens'],skills:['Liderança','Discipulado'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'mulheres',name:'Mulheres',leader:'Renata Queiroz',health:'green',budget:0,type:'',
+                  activities:['Ministério de mulheres'],skills:['Liderança','Pastoral','Acolhimento'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                },
+                {
+                  id:'casais',name:'Casais',leader:'Vinicius Queiroz',health:'green',budget:0,type:'',
+                  activities:['Ministério de casais'],skills:['Aconselhamento','Pastoral familiar'],
+                  positions:[
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
+                  ],children:[]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+let collapseState={}, zoomLevel=1, currentViewId=null, currentPosRef=null;
+
+// ── UTILS ──
+function findNode(tree,id){
+  if(tree.id===id) return tree;
+  for(let c of (tree.children||[])){const f=findNode(c,id);if(f) return f;}
+  return null;
+}
+function removeNode(tree,id){
+  tree.children=(tree.children||[]).filter(c=>c.id!==id);
+  for(let c of tree.children) removeNode(c,id);
+}
+function genId(){return 'n'+Date.now().toString(36)}
+function fmt(n){return n?'R$ '+Number(n).toLocaleString('pt-BR'):'—'}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function getAllVolunteers(){
+  const set=new Set();
+  function walk(n){
+    for(let p of (n.positions||[])) for(let v of (p.volunteers||[])) if(v.trim()) set.add(v.trim());
+    for(let c of (n.children||[])) walk(c);
+  }
+  walk(data);
+  return set;
+}
+
+function calcStats(tree){
+  let ministries=0,totalPos=0,filledPos=0,totalBudget=0;
+  function walk(n){
+    ministries++;totalBudget+=Number(n.budget)||0;
+    for(let p of (n.positions||[])){totalPos++;if(p.filled) filledPos++;}
+    for(let c of (n.children||[])) walk(c);
+  }
+  walk(tree);
+  const vols=getAllVolunteers().size;
+  return{ministries,totalPos,filledPos,totalBudget,vols};
+}
+
+function searchMatch(node,q){
+  if(!q) return true;
+  const l=q.toLowerCase();
+  if(node.name.toLowerCase().includes(l)||(node.leader||'').toLowerCase().includes(l)) return true;
+  if((node.activities||[]).some(a=>a.toLowerCase().includes(l))) return true;
+  if((node.positions||[]).some(p=>p.volunteers&&p.volunteers.some(v=>v.toLowerCase().includes(l)))) return true;
+  return false;
+}
+function nodeVisible(node,q){
+  if(!q) return true;
+  if(searchMatch(node,q)) return true;
+  return (node.children||[]).some(c=>nodeVisible(c,q));
+}
+
+// ── STATS BAR ──
+function renderStats(){
+  const s=calcStats(data);
+  const pct=s.totalPos?Math.round(s.filledPos/s.totalPos*100):0;
+  document.getElementById('stats-bar').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${s.ministries}</div><div class="stat-label">Ministérios</div></div>
+    <div class="stat-card"><div class="stat-num">${s.filledPos}/${s.totalPos}</div><div class="stat-label">Posições ocupadas</div></div>
+    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Headcount</div></div>
+    <div class="stat-card"><div class="stat-num">${s.vols}</div><div class="stat-label">Voluntários únicos</div></div>
+    <div class="stat-card"><div class="stat-num" style="font-size:18px">${fmt(s.totalBudget)}</div><div class="stat-label">Orçamento/mês</div></div>
+  `;
+}
+
+// ── TREE ──
+function renderTree(){
+  const q=document.getElementById('search-input').value;
+  const root=document.getElementById('chart-root');
+  root.innerHTML='';
+  root.appendChild(buildBranch(data,q,true));
+  renderStats();
+}
+
+function buildBranch(node,q,isRoot=false){
+  const branch=document.createElement('div');
+  branch.className='tree-branch';
+  branch.appendChild(buildCard(node,isRoot));
+  const children=(node.children||[]).filter(c=>nodeVisible(c,q));
+  if(children.length&&!collapseState[node.id]){
+    const down=document.createElement('div');down.className='tree-connector-down';branch.appendChild(down);
+    const lvl=document.createElement('div');lvl.className='tree-children';
+    children.forEach(c=>lvl.appendChild(buildBranch(c,q)));
+    branch.appendChild(lvl);
+  }
+  return branch;
+}
+
+function buildCard(node,isRoot){
+  const filled=(node.positions||[]).filter(p=>p.filled).length;
+  const total=(node.positions||[]).length;
+  const hasChildren=(node.children||[]).length>0;
+  const card=document.createElement('div');
+  let cls=`node-card health-${node.health||'green'}`;
+  if(isRoot) cls+=' root-node';
+  if(node.type==='exec'||node.type==='min') cls+=' wing-node';
+  card.className=cls;card.dataset.id=node.id;
+
+  const hbar=document.createElement('div');hbar.className='node-health-bar';card.appendChild(hbar);
+
+  const tagHtml=node.type==='exec'?'<span class="node-tag tag-exec">Asa Executiva</span>':
+    node.type==='min'?'<span class="node-tag tag-min">Asa Ministerial</span>':
+    node.type==='advisory'?'<span class="node-tag tag-advisory">Comitê</span>':'';
+
+  const head=document.createElement('div');head.className='node-head';
+  head.innerHTML=`<div>
+    <div class="node-title">${esc(node.name)}</div>
+    ${node.leader?`<div class="node-leader">${esc(node.leader)}</div>`:''}
+    ${tagHtml}
+  </div><div class="health-badge" title="Saúde: ${node.health}"></div>`;
+  card.appendChild(head);
+
+  if(total>0){
+    const body=document.createElement('div');body.className='node-body';
+    const sw=document.createElement('div');sw.className='slot-wrap';
+    (node.positions||[]).forEach((p,idx)=>{
+      const s=document.createElement('div');
+      s.className=`slot ${p.filled?'filled':'vacant'}`;
+      s.title=`${p.name} — clique para detalhes`;
+      s.addEventListener('click',e=>{e.stopPropagation();openPosModal(node.id,idx);});
+      sw.appendChild(s);
+    });
+    body.appendChild(sw);
+    const sl=document.createElement('div');sl.className='slot-label';sl.textContent=`${filled}/${total} posições`;
+    body.appendChild(sl);
+    card.appendChild(body);
+  }
+
+  const footer=document.createElement('div');footer.className='node-footer';footer.innerHTML='<span></span>';
+  if(hasChildren){
+    const tb=document.createElement('button');tb.className='toggle-btn';
+    tb.title=collapseState[node.id]?'Expandir':'Recolher';
+    tb.textContent=collapseState[node.id]?'▶':'▼';
+    tb.addEventListener('click',e=>{e.stopPropagation();collapseState[node.id]=!collapseState[node.id];renderTree();});
+    footer.appendChild(tb);
+  }
+  card.appendChild(footer);
+  card.addEventListener('click',()=>openViewModal(node.id));
+  return card;
+}
+
+// ── VIEW MODAL (ministério) ──
+function openViewModal(id){
+  currentViewId=id;
+  const node=findNode(data,id);if(!node) return;
+  document.getElementById('vm-title').textContent=node.name;
+  document.getElementById('vm-subtitle').textContent=node.leader?`Líder: ${node.leader}`:'';
+  const hl={green:'🟢 Saudável',amber:'🟡 Atenção',red:'🔴 Crítico'};
+
+  const posHtml=(node.positions||[]).length?`<div class="modal-section">
+    <div class="ms-label">Posições — clique em uma para ver o Job Description</div>
+    <div class="positions-grid">
+      ${node.positions.map((p,i)=>`
+        <div class="pos-item ${p.filled?'filled':''}" onclick="openPosModal('${id}',${i})">
+          <div class="pos-name">${esc(p.name)}</div>
+          <div class="pos-status">${p.filled?'Ocupada':'Vaga aberta'}</div>
+          ${(p.volunteers||[]).length?`<div class="pos-vols">${p.volunteers.length} voluntário(s)</div>`:''}
+          ${p.successor?`<div class="pos-successor">Suc.: ${esc(p.successor)}</div>`:''}
+        </div>`).join('')}
+    </div>
+    <div class="pos-item-hint">Clique em qualquer posição para ver detalhes, adicionar voluntários e editar o Job Description.</div>
+  </div>`:'';
+
+  const actHtml=(node.activities||[]).length?`<div class="modal-section">
+    <div class="ms-label">Atividades Principais</div>
+    <ul class="ms-list">${node.activities.map(a=>`<li>${esc(a)}</li>`).join('')}</ul>
+  </div>`:'';
+
+  const skillHtml=(node.skills||[]).length?`<div class="modal-section">
+    <div class="ms-label">Competências do Ministério</div>
+    <div class="tag-row">${node.skills.map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</div>
+  </div>`:'';
+
+  document.getElementById('vm-body').innerHTML=`
+    <div class="modal-section" style="display:flex;justify-content:space-between;align-items:center">
+      <div><div class="ms-label">Saúde</div><div style="margin-top:4px;font-size:14px">${hl[node.health||'green']}</div></div>
+      <div><div class="ms-label">Orçamento</div><div style="margin-top:4px;font-size:14px;font-family:var(--mono)">${fmt(node.budget)}</div></div>
+    </div>
+    ${actHtml}${posHtml}${skillHtml}`;
+
+  document.getElementById('vm-edit-btn').onclick=()=>{closeModal('view-overlay');openEditModal(id)};
+  document.getElementById('vm-delete-btn').onclick=()=>deleteNode(id);
+  document.getElementById('vm-add-child-btn').onclick=()=>{closeModal('view-overlay');openAddModal(id)};
+  document.getElementById('view-overlay').style.display='flex';
+}
+
+// ── POSITION MODAL (Job Description) ──
+function openPosModal(nodeId,posIdx){
+  closeModal('view-overlay');
+  const node=findNode(data,nodeId);if(!node) return;
+  const p=node.positions[posIdx];if(!p) return;
+  currentPosRef={nodeId,posIdx};
+
+  document.getElementById('pm-title').textContent=p.name;
+  document.getElementById('pm-subtitle').textContent=`${node.name} · ${p.filled?'Ocupada':'Vaga aberta'}`;
+
+  const jdHtml=p.jd?`<div class="modal-section">
+    <div class="ms-label">Job Description</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap">${esc(p.jd)}</div>
+  </div>`:'<div class="modal-section" style="color:var(--text3);font-size:13px;font-style:italic">Nenhum Job Description cadastrado. Clique em "Editar posição" para adicionar.</div>';
+
+  const skillHtml=(p.skills||[]).length?`<div class="modal-section">
+    <div class="ms-label">Competências Necessárias</div>
+    <div class="tag-row">${p.skills.map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</div>
+  </div>`:'';
+
+  const hoursHtml=p.hours?`<div><div class="ms-label">Carga horária</div><div style="font-size:14px;font-family:var(--mono);margin-top:4px">${p.hours}h/semana</div></div>`:'';
+  const sucHtml=p.successor?`<div><div class="ms-label">Sucessor</div><div style="font-size:14px;color:var(--amber);margin-top:4px">${esc(p.successor)}</div></div>`:'';
+
+  const volsHtml=`<div class="modal-section">
+    <div class="ms-label">Voluntários nesta posição (${(p.volunteers||[]).length})</div>
+    ${(p.volunteers||[]).length?`<div class="vol-list">${p.volunteers.map(v=>`
+      <div class="vol-item"><span class="vol-name">${esc(v)}</span></div>`).join('')}</div>`
+    :'<div style="font-size:13px;color:var(--text3);font-style:italic">Nenhum voluntário alocado. Edite para adicionar.</div>'}
+  </div>`;
+
+  document.getElementById('pm-body').innerHTML=`
+    ${(hoursHtml||sucHtml)?`<div class="modal-section" style="display:flex;gap:2rem">${hoursHtml}${sucHtml}</div>`:''}
+    ${jdHtml}${skillHtml}${volsHtml}`;
+
+  document.getElementById('pm-edit-btn').onclick=()=>{closeModal('pos-overlay');openPosEditModal(nodeId,posIdx)};
+  document.getElementById('pos-overlay').style.display='flex';
+}
+
+// ── POSITION EDIT MODAL ──
+function openPosEditModal(nodeId,posIdx){
+  const node=findNode(data,nodeId);if(!node) return;
+  const p=node.positions[posIdx];if(!p) return;
+  currentPosRef={nodeId,posIdx};
+
+  document.getElementById('pem-title').textContent='Editar: '+p.name;
+  document.getElementById('pem-node-id').value=nodeId;
+  document.getElementById('pem-pos-idx').value=posIdx;
+  document.getElementById('pem-name').value=p.name;
+  document.getElementById('pem-filled').value=p.filled?'true':'false';
+  document.getElementById('pem-jd').value=p.jd||'';
+  document.getElementById('pem-skills').value=(p.skills||[]).join(', ');
+  document.getElementById('pem-successor').value=p.successor||'';
+  document.getElementById('pem-hours').value=p.hours||'';
+
+  const vl=document.getElementById('pem-vols-list');
+  vl.innerHTML='';
+  (p.volunteers||[]).forEach((v,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px';
+    row.innerHTML=`<span style="font-size:13px">${esc(v)}</span><button onclick="removePosVol(${i})" class="vol-remove" title="Remover">✕</button>`;
+    vl.appendChild(row);
+  });
+
+  document.getElementById('pem-vol-input').value='';
+  document.getElementById('pos-edit-overlay').style.display='flex';
+}
+
+function removePosVol(idx){
+  const nodeId=document.getElementById('pem-node-id').value;
+  const posIdx=parseInt(document.getElementById('pem-pos-idx').value);
+  const node=findNode(data,nodeId);
+  node.positions[posIdx].volunteers.splice(idx,1);
+  openPosEditModal(nodeId,posIdx);
+}
+
+function addVolunteerToPosForm(){
+  const nodeId=document.getElementById('pem-node-id').value;
+  const posIdx=parseInt(document.getElementById('pem-pos-idx').value);
+  const inp=document.getElementById('pem-vol-input');
+  const name=inp.value.trim();
+  if(!name) return;
+  const node=findNode(data,nodeId);
+  if(!node.positions[posIdx].volunteers) node.positions[posIdx].volunteers=[];
+  node.positions[posIdx].volunteers.push(name);
+  inp.value='';
+  openPosEditModal(nodeId,posIdx);
+}
+
+function savePosEdit(){
+  const nodeId=document.getElementById('pem-node-id').value;
+  const posIdx=parseInt(document.getElementById('pem-pos-idx').value);
+  const node=findNode(data,nodeId);if(!node) return;
+  const p=node.positions[posIdx];if(!p) return;
+  p.name=document.getElementById('pem-name').value.trim()||p.name;
+  p.filled=document.getElementById('pem-filled').value==='true';
+  p.jd=document.getElementById('pem-jd').value;
+  p.skills=document.getElementById('pem-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  p.successor=document.getElementById('pem-successor').value.trim();
+  p.hours=Number(document.getElementById('pem-hours').value)||0;
+  closeModal('pos-edit-overlay');
+  renderTree();
+}
+
+// ── NODE EDIT MODAL ──
+function openAddModal(parentId){
+  document.getElementById('em-title').textContent='Novo Ministério';
+  document.getElementById('em-id').value='';
+  document.getElementById('em-parent').value=parentId||'';
+  ['em-name','em-leader','em-activities','em-skills','em-budget'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('em-health').value='green';
+  document.getElementById('em-type').value='';
+  document.getElementById('positions-list').innerHTML='';
+  document.getElementById('edit-overlay').style.display='flex';
+}
+
+function openEditModal(id){
+  const node=findNode(data,id);if(!node) return;
+  document.getElementById('em-title').textContent='Editar: '+node.name;
+  document.getElementById('em-id').value=id;
+  document.getElementById('em-parent').value='';
+  document.getElementById('em-name').value=node.name;
+  document.getElementById('em-leader').value=node.leader||'';
+  document.getElementById('em-activities').value=(node.activities||[]).join('\n');
+  document.getElementById('em-skills').value=(node.skills||[]).join(', ');
+  document.getElementById('em-budget').value=node.budget||'';
+  document.getElementById('em-health').value=node.health||'green';
+  document.getElementById('em-type').value=node.type||'';
+  const pl=document.getElementById('positions-list');pl.innerHTML='';
+  (node.positions||[]).forEach(p=>addPositionRow(p));
+  document.getElementById('edit-overlay').style.display='flex';
+}
+
+function addPositionRow(pos){
+  const pl=document.getElementById('positions-list');
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;gap:8px;align-items:center';
+  row.innerHTML=`
+    <input class="form-input pos-name-in" style="flex:2" placeholder="Nome da posição" value="${esc(pos?pos.name:'')}"/>
+    <select class="form-select pos-filled-in" style="flex:1">
+      <option value="true" ${pos&&pos.filled?'selected':''}>Ocupada</option>
+      <option value="false" ${pos&&!pos.filled?'selected':''}>Vaga</option>
+    </select>
+    <button type="button" onclick="this.parentNode.remove()" style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--red);cursor:pointer;font-size:13px">✕</button>
+  `;
+  pl.appendChild(row);
+}
+
+function saveNode(){
+  const id=document.getElementById('em-id').value;
+  const parentId=document.getElementById('em-parent').value;
+  const name=document.getElementById('em-name').value.trim();
+  if(!name){alert('Nome obrigatório');return;}
+  const leader=document.getElementById('em-leader').value.trim();
+  const activities=document.getElementById('em-activities').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const skills=document.getElementById('em-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const budget=Number(document.getElementById('em-budget').value)||0;
+  const health=document.getElementById('em-health').value;
+  const type=document.getElementById('em-type').value;
+  const positions=[];
+  document.getElementById('positions-list').querySelectorAll('div').forEach(r=>{
+    const n=r.querySelector('.pos-name-in')?.value.trim();if(!n) return;
+    positions.push({name:n,filled:r.querySelector('.pos-filled-in')?.value==='true',successor:'',jd:'',skills:[],volunteers:[],hours:0});
+  });
+  if(id){
+    const node=findNode(data,id);
+    if(node){
+      const keepPos=positions.map(np=>{
+        const existing=(node.positions||[]).find(ep=>ep.name===np.name);
+        return existing?Object.assign(existing,{filled:np.filled}):np;
+      });
+      Object.assign(node,{name,leader,activities,skills,budget,health,type,positions:keepPos});
+    }
+  } else {
+    const newNode={id:genId(),name,leader,activities,skills,budget,health,type,positions,children:[]};
+    if(parentId){const parent=findNode(data,parentId);if(parent) parent.children.push(newNode);}
+    else{data.children=data.children||[];data.children.push(newNode);}
+  }
+  closeModal('edit-overlay');renderTree();
+}
+
+function deleteNode(id){
+  if(!confirm('Remover este ministério e todos os seus filhos?')) return;
+  closeModal('view-overlay');
+  if(data.id===id){alert('Não é possível remover o nó raiz.');return;}
+  removeNode(data,id);renderTree();
+}
+
+// ── PRINT ──
+function openPrintModal(){document.getElementById('print-overlay').style.display='flex';}
+
+function executePrint(){
+  const mode=document.querySelector('input[name="pmode"]:checked').value;
+  const state=document.querySelector('input[name="pstate"]:checked').value;
+  closeModal('print-overlay');
+  if(state==='expanded') expandAll();
+  document.getElementById('print-date').textContent='Impresso em '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+
+  if(mode==='fit'){
+    const root=document.getElementById('chart-root');
+    const W=root.scrollWidth, pageW=1050;
+    const scale=Math.min(1,pageW/W);
+    root.style.transform=`scale(${scale})`;
+    root.style.transformOrigin='top center';
+    document.body.classList.add('print-fit');
+    setTimeout(()=>{
+      window.print();
+      setTimeout(()=>{
+        root.style.transform=`scale(${zoomLevel})`;
+        document.body.classList.remove('print-fit');
+      },500);
+    },300);
+  } else {
+    const root=document.getElementById('chart-root');
+    const prev=root.style.transform;
+    root.style.transform='none';
+    setTimeout(()=>{window.print();setTimeout(()=>{root.style.transform=prev;},300);},300);
+  }
+}
+
+// ── HELPERS ──
+function closeModal(id){document.getElementById(id).style.display='none';}
+function expandAll(){collapseState={};renderTree();}
+function collapseAll(){
+  function mark(n,depth){
+    if(depth>=4) collapseState[n.id]=true;
+    (n.children||[]).forEach(c=>mark(c,depth+1));
+  }
+  mark(data,1);
+  renderTree();
+  setTimeout(()=>{
+    const wrap=document.getElementById("canvas-wrap");
+    const root=document.getElementById("chart-root");
+    const availW=wrap.clientWidth-64;
+    const availH=wrap.clientHeight-64;
+    const scaleW=availW/root.scrollWidth;
+    const scaleH=availH/root.scrollHeight;
+    const scale=Math.min(1,scaleW,scaleH);
+    zoomLevel=Math.round(scale*10)/10;
+    root.style.transform="scale("+zoomLevel+")";
+    document.getElementById("zoom-label").textContent=Math.round(zoomLevel*100)+"%";
+  },150);
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='organograma-mosaico.json';a.click();
+}
+
+function zoom(delta){
+  zoomLevel=Math.min(2,Math.max(0.3,zoomLevel+delta));
+  document.getElementById('chart-root').style.transform=`scale(${zoomLevel})`;
+  document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';
+}
+function resetZoom(){zoomLevel=1;zoom(0);}
+
+// ── PAN (mouse desktop) ──
+let isPanning=false,panStart={x:0,y:0},scrollStart={x:0,y:0};
+const cw=document.getElementById('canvas-wrap');
+cw.addEventListener('mousedown',e=>{
+  if(e.target.closest('.node-card')||e.target.closest('.btn')||e.target.closest('.toggle-btn')||e.target.closest('.slot')) return;
+  isPanning=true;cw.classList.add('panning');
+  panStart={x:e.clientX,y:e.clientY};scrollStart={x:cw.scrollLeft,y:cw.scrollTop};
+});
+document.addEventListener('mousemove',e=>{if(!isPanning) return;cw.scrollLeft=scrollStart.x-(e.clientX-panStart.x);cw.scrollTop=scrollStart.y-(e.clientY-panStart.y);});
+document.addEventListener('mouseup',()=>{isPanning=false;cw.classList.remove('panning');});
+
+// ── PINCH-TO-ZOOM (mobile) ──
+let lastTouchDist=null;
+cw.addEventListener('touchstart',e=>{
+  if(e.touches.length===2){
+    lastTouchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    e.preventDefault();
+  }
+},{passive:false});
+cw.addEventListener('touchmove',e=>{
+  if(e.touches.length===2&&lastTouchDist!==null){
+    const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    const delta=(dist-lastTouchDist)*0.006;
+    lastTouchDist=dist;
+    zoomLevel=Math.min(2,Math.max(0.2,zoomLevel+delta));
+    document.getElementById('chart-root').style.transform='scale('+zoomLevel+')';
+    document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';
+    e.preventDefault();
+  }
+},{passive:false});
+cw.addEventListener('touchend',()=>{lastTouchDist=null;},{passive:true});
+
+// ── MOBILE AUTO-FIT ──
+function autoFitMobile(){
+  if(window.innerWidth>768) return;
+  setTimeout(()=>{
+    const root=document.getElementById('chart-root');
+    const wrap=document.getElementById('canvas-wrap');
+    root.style.transform='scale(1)';
+    const cW=root.scrollWidth, aW=wrap.clientWidth-24;
+    const scale=Math.min(1, aW/cW);
+    zoomLevel=Math.round(scale*10)/10||0.5;
+    root.style.transform='scale('+zoomLevel+')';
+    root.style.transformOrigin='top left';
+    document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';
+  },300);
+}
+window.addEventListener('resize', autoFitMobile);
+
+renderTree();
+// Start collapsed on mobile for better overview
+if(window.innerWidth<=768){ collapseAll(); }
+else { autoFitMobile(); }
+</script>
+
+
+</body></html>
