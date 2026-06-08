@@ -4,460 +4,308 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Organograma — Igreja Mosaico</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0f1117;--bg2:#161b26;--bg3:#1e2535;--bg4:#252d3f;
   --border:#2d3650;--border2:#3d4f70;
   --text:#e8eaf2;--text2:#9ba3be;--text3:#6b7394;
-  --accent:#4f6ef7;--accent2:#3a57e8;--accent-glow:rgba(79,110,247,0.15);
-  --green:#22c55e;--green-bg:rgba(34,197,94,0.12);
-  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.12);
-  --red:#ef4444;--red-bg:rgba(239,68,68,0.12);
-  --radius:10px;--radius-lg:16px;
+  --accent:#4f6ef7;--accent2:#3a57e8;--glow:rgba(79,110,247,0.15);
+  --green:#22c55e;--gbg:rgba(34,197,94,0.12);
+  --amber:#f59e0b;--abg:rgba(245,158,11,0.12);
+  --red:#ef4444;--rbg:rgba(239,68,68,0.12);
+  --sb:360px;--r:10px;--rl:16px;
   --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
 }
-/* Mobile touch fix */
-* { -webkit-tap-highlight-color: rgba(79,110,247,0.2); touch-action: manipulation; }
-button, .node-card, .slot, .pos-item, .toggle-btn, .modal-close, .btn {
-  cursor: pointer;
-  -webkit-tap-highlight-color: rgba(79,110,247,0.3);
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+*{-webkit-tap-highlight-color:rgba(79,110,247,.2)}
+button,.node-card,.slot,.sb-pos-item,.toggle-btn,.btn{cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+#main{display:flex;flex:1;overflow:hidden}
+#cv{flex:1;overflow:auto;padding:2rem;cursor:grab;-webkit-overflow-scrolling:touch}
+#cv.pan{cursor:grabbing}
+#cv.sb-open{margin-right:var(--sb)}
+#cr{display:inline-flex;flex-direction:column;align-items:center;min-width:100%;transform-origin:top left;transition:transform .2s}
+header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;position:relative;z-index:10}
 .logo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
-.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700}
-.header-actions{display:flex;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font)}
-.btn:hover{background:var(--bg4);border-color:var(--border2)}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent2)}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700;flex-shrink:0}
+.hact{display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;transition:all .15s;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--font)}
+.btn:hover,.btn:active{background:var(--bg4)}
+.btn-p{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-p:hover,.btn-p:active{background:var(--accent2)}
 .btn svg{width:15px;height:15px;flex-shrink:0}
 .btn-sm{padding:5px 10px;font-size:12px}
-
-.toolbar{display:flex;align-items:center;gap:8px;padding:.75rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
-.toolbar-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
-.search-wrap{position:relative;flex:1;min-width:180px;max-width:280px}
-.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3)}
-.search-input{width:100%;padding:7px 10px 7px 32px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font);outline:none}
-.search-input:focus{border-color:var(--accent)}
-.legend{display:flex;align-items:center;gap:14px;margin-left:auto}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-bottom:1px solid var(--border)}
-.stat-card{padding:.9rem 1rem;border-right:1px solid var(--border);text-align:center}
-.stat-card:last-child{border-right:none}
-.stat-num{font-size:22px;font-weight:600;color:var(--text)}
-.stat-label{font-size:10px;color:var(--text3);margin-top:2px}
-
-#canvas-wrap{overflow:auto;padding:2rem;min-height:calc(100vh - 160px);cursor:grab;user-select:none;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
-#canvas-wrap.panning{cursor:grabbing}
-#chart-root{display:inline-flex;flex-direction:column;align-items:center;min-width:100%;transform-origin:top center;transition:transform .2s}
-
-.tree-branch{display:flex;flex-direction:column;align-items:center;position:relative}
-.tree-children{display:flex;gap:20px;padding-top:20px;position:relative;justify-content:center}
-.tree-children::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--border2)}
-.tree-children>.tree-branch::before{content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);height:20px;width:1px;background:var(--border2)}
-.tree-connector-down{width:1px;height:20px;background:var(--border2)}
-
-.node-card{position:relative;width:200px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:all .2s;flex-shrink:0}
-.node-card:hover{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.node-card.root-node{width:260px}
-.node-card.wing-node{width:220px;border-color:var(--border2)}
-.node-health-bar{height:3px;border-radius:var(--radius) var(--radius) 0 0}
-.health-green .node-health-bar{background:var(--green)}
-.health-amber .node-health-bar{background:var(--amber)}
-.health-red .node-health-bar{background:var(--red)}
-.node-head{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 12px 8px}
-.node-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
-.node-leader{font-size:11px;color:var(--text2);margin-top:2px}
-.node-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:2px 6px;border-radius:4px;margin-top:4px;display:inline-block}
-.tag-exec{background:rgba(79,110,247,.15);color:#7b9bfa}
-.tag-min{background:rgba(34,197,94,.12);color:#4ade80}
-.tag-advisory{background:rgba(245,158,11,.12);color:#fbbf24}
-.health-badge{width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px}
-.health-green .health-badge{background:var(--green-bg);box-shadow:0 0 0 1px var(--green)}
-.health-amber .health-badge{background:var(--amber-bg);box-shadow:0 0 0 1px var(--amber)}
-.health-red .health-badge{background:var(--red-bg);box-shadow:0 0 0 1px var(--red)}
-.node-body{padding:0 12px 10px;border-top:1px solid var(--border)}
-.slot-wrap{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
-.slot{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);cursor:pointer;transition:all .15s}
-.slot:hover{transform:scale(1.2)}
-.slot.filled{background:var(--accent);border-color:var(--accent)}
-.slot.vacant{border-style:dashed;border-color:var(--text3)}
-.slot-label{font-size:10px;color:var(--text3);margin-top:5px}
-.node-footer{display:flex;align-items:center;justify-content:flex-end;padding:6px 12px;border-top:1px solid var(--border)}
-.toggle-btn{width:20px;height:20px;border-radius:4px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:10px;color:var(--text2)}
-.toggle-btn:hover{background:var(--bg4)}
-
-/* MODALS */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;animation:slideUp .2s ease}
-.modal-lg{max-width:680px}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)}
-.modal-title{font-size:16px;font-weight:600}
-.modal-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
-.modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px;transition:all .15s}
-.modal-close:hover{background:var(--bg4)}
-.modal-body{padding:1.25rem 1.5rem}
-.modal-section{margin-bottom:1.25rem}
-.modal-section:last-child{margin-bottom:0}
-.ms-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.5rem}
-.ms-list{list-style:none;display:flex;flex-direction:column;gap:4px}
-.ms-list li{font-size:13px;color:var(--text2);padding-left:12px;position:relative}
-.ms-list li::before{content:'•';position:absolute;left:0;color:var(--accent)}
+.tbar{display:flex;align-items:center;gap:8px;padding:.65rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.sw{position:relative;flex:1;min-width:150px;max-width:260px}
+.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);pointer-events:none}
+.si{width:100%;padding:7px 10px 7px 32px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font);outline:none}
+.si:focus{border-color:var(--accent)}
+.sbar{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border);flex-shrink:0}
+.sc{padding:.75rem 1rem;border-right:1px solid var(--border);text-align:center}
+.sc:last-child{border-right:none}
+.sn{font-size:20px;font-weight:600}
+.sl{font-size:10px;color:var(--text3);margin-top:2px}
+.tb{display:flex;flex-direction:column;align-items:center;position:relative}
+.tc{display:flex;gap:18px;padding-top:20px;position:relative;justify-content:center}
+.tc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--border2)}
+.tc>.tb::before{content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);height:20px;width:1px;background:var(--border2)}
+.tcd{width:1px;height:20px;background:var(--border2)}
+.nc{position:relative;width:190px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:all .2s;flex-shrink:0}
+.nc:hover,.nc:active,.nc.act{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.nc.act{background:var(--bg3)}
+.nc.rn{width:250px}
+.nc.wn{width:210px;border-color:var(--border2)}
+.nhb{height:3px;border-radius:var(--r) var(--r) 0 0}
+.hg .nhb{background:var(--green)}
+.ha .nhb{background:var(--amber)}
+.hr .nhb{background:var(--red)}
+.nh{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 12px 8px}
+.nt{font-size:12px;font-weight:600;line-height:1.3}
+.nl{font-size:10px;color:var(--text2);margin-top:2px}
+.ntag{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:2px 6px;border-radius:4px;margin-top:4px;display:inline-block}
+.te{background:rgba(79,110,247,.15);color:#7b9bfa}
+.tm{background:rgba(34,197,94,.12);color:#4ade80}
+.tc2{background:rgba(245,158,11,.12);color:#fbbf24}
+.hbd{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.hg .hbd{background:var(--gbg);box-shadow:0 0 0 1px var(--green)}
+.ha .hbd{background:var(--abg);box-shadow:0 0 0 1px var(--amber)}
+.hr .hbd{background:var(--rbg);box-shadow:0 0 0 1px var(--red)}
+.nb{padding:0 12px 10px;border-top:1px solid var(--border)}
+.slw{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.slot{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border2);cursor:pointer;transition:all .15s;flex-shrink:0}
+.slot:hover,.slot:active{transform:scale(1.15)}
+.slot.fi{background:var(--accent);border-color:var(--accent)}
+.slot.va{border-style:dashed;border-color:var(--text3)}
+.sll{font-size:10px;color:var(--text3);margin-top:5px}
+.nf{display:flex;align-items:center;justify-content:flex-end;padding:5px 10px;border-top:1px solid var(--border)}
+.tbtn{width:28px;height:28px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:11px;color:var(--text2)}
+.tbtn:hover,.tbtn:active{background:var(--bg4)}
+/* SIDEBAR */
+#sb{position:fixed;top:0;right:0;bottom:0;width:var(--sb);background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:150;overflow:hidden}
+#sb.open{transform:translateX(0)}
+.sbc{display:flex;align-items:center;gap:4px;padding:.65rem 1rem;border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.sbc-item{font-size:11px;color:var(--text3);cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .1s;white-space:nowrap}
+.sbc-item:hover{color:var(--text);background:var(--bg3)}
+.sbc-item.cur{color:var(--text);font-weight:600;cursor:default}
+.sbc-sep{font-size:11px;color:var(--text3)}
+.sbh{padding:.9rem 1rem .5rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.sbt-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sbt{font-size:15px;font-weight:600;flex:1}
+.sbcl{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:15px;flex-shrink:0;transition:all .15s}
+.sbcl:hover,.sbcl:active{background:var(--bg4)}
+.sbl{font-size:12px;color:var(--text2);margin-top:4px}
+.sbhr{display:flex;align-items:center;gap:8px;margin-top:6px}
+.sbhd{width:10px;height:10px;border-radius:50%}
+.hg .sbhd{background:var(--green)}
+.ha .sbhd{background:var(--amber)}
+.hr .sbhd{background:var(--red)}
+.sbhl{font-size:11px;color:var(--text3)}
+.sb-tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border);flex-shrink:0}
+.sbtab{padding:.5rem .75rem;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-family:var(--font);background:transparent;border-top:none;border-left:none;border-right:none}
+.sbtab:hover,.sbtab:active{color:var(--text)}
+.sbtab.act{color:var(--accent);border-bottom-color:var(--accent)}
+.sbb{flex:1;overflow-y:auto;padding:1rem;min-height:0}
+.sbb::-webkit-scrollbar{width:4px}
+.sbb::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sec{margin-bottom:1.25rem}
+.sec-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);margin-bottom:.6rem;display:block}
+.ps-list{display:flex;flex-direction:column;gap:6px}
+.ps-item{padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s}
+.ps-item:hover,.ps-item:active{border-color:var(--accent);background:var(--glow)}
+.ps-item.fi{border-color:rgba(79,110,247,.4)}
+.ps-name{font-size:13px;font-weight:500}
+.ps-meta{display:flex;align-items:center;gap:8px;margin-top:3px}
+.ps-st{font-size:10px;color:var(--text3)}
+.ps-st.fi{color:var(--accent)}
+.vl-list{display:flex;flex-direction:column;gap:6px}
+.vl-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px}
+.vl-av{width:26px;height:26px;border-radius:50%;background:var(--glow);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0}
+.vl-name{font-size:13px;flex:1}
+.vl-pos{font-size:10px;color:var(--text3)}
+.act-item{font-size:13px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.act-item::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.act-item:last-child{border-bottom:none}
 .tag-row{display:flex;gap:6px;flex-wrap:wrap}
-.tag{padding:3px 10px;border-radius:20px;font-size:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
-.modal-footer{display:flex;gap:8px;justify-content:flex-end;padding:1rem 1.5rem;border-top:1px solid var(--border);flex-wrap:wrap}
-
-/* POSITIONS GRID — clicável */
-.positions-grid{display:flex;gap:8px;flex-wrap:wrap}
-.pos-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;min-width:110px;cursor:pointer;transition:all .15s}
-.pos-item:hover{border-color:var(--accent);background:var(--accent-glow)}
-.pos-item.filled{border-color:var(--accent);background:var(--accent-glow)}
-.pos-item .pos-name{font-weight:500;color:var(--text);margin-bottom:2px}
-.pos-item .pos-status{font-size:11px;color:var(--text3)}
-.pos-item.filled .pos-status{color:var(--accent)}
-.pos-item .pos-vols{font-size:10px;color:var(--text3);margin-top:3px}
-.pos-item .pos-successor{font-size:11px;color:var(--amber);margin-top:3px}
-.pos-item-hint{font-size:10px;color:var(--text3);font-style:italic;margin-top:6px}
-
-/* VOLUNTEER LIST */
-.vol-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.vol-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px}
-.vol-name{color:var(--text)}
-.vol-tags{display:flex;gap:4px}
-.vol-tag-min{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--accent-glow);color:#7b9bfa;border:1px solid rgba(79,110,247,.3)}
-.vol-remove{width:20px;height:20px;border-radius:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-.vol-remove:hover{color:var(--red)}
-.vol-add-row{display:flex;gap:8px;margin-top:8px}
-
-/* FORM */
-.form-group{margin-bottom:1rem}
-.form-label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
-.form-input,.form-textarea,.form-select{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border .15s}
-.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent)}
-.form-textarea{resize:vertical;min-height:80px}
-.form-select option{background:var(--bg3)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-/* PRINT MODAL */
-.print-opt{display:flex;flex-direction:column;gap:10px;padding:1rem 0}
-.print-opt label{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:14px;transition:all .15s}
-.print-opt label:hover{border-color:var(--border2);background:var(--bg3)}
-.print-opt input[type=radio]{accent-color:var(--accent);width:15px;height:15px}
-
+.tag{padding:3px 10px;border-radius:20px;font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text2)}
+.proc-list{display:flex;flex-direction:column;gap:6px}
+.proc-step{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px}
+.ps-num{width:20px;height:20px;border-radius:50%;background:var(--glow);border:1px solid var(--accent);color:var(--accent);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ps-cnt{flex:1}
+.ps-ttl{font-size:13px;font-weight:500}
+.ps-dsc{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5}
+.ps-rsp{font-size:10px;color:var(--accent);margin-top:4px}
+.ps-acts{display:flex;gap:4px;margin-left:auto;flex-shrink:0}
+.ps-btn{width:24px;height:24px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.ps-btn:hover,.ps-btn:active{background:var(--bg4);color:var(--text)}
+.add-proc{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;margin-top:10px}
+.fi-inp,.fi-ta,.fi-sel{width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border .15s;margin-bottom:6px}
+.fi-inp:focus,.fi-ta:focus,.fi-sel:focus{border-color:var(--accent)}
+.fi-ta{resize:vertical;min-height:65px}
+.fi-sel option{background:var(--bg2)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+/* MODALS */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.mo{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;animation:su .2s ease}
+.mo-lg{max-width:620px}
+@keyframes su{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;border-bottom:1px solid var(--border)}
+.mt{font-size:15px;font-weight:600}
+.ms{font-size:11px;color:var(--text3);margin-top:2px}
+.mcl{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:15px;transition:all .15s}
+.mcl:hover,.mcl:active{background:var(--bg4)}
+.mb{padding:1rem 1.4rem}
+.msec{margin-bottom:1rem}
+.msec:last-child{margin-bottom:0}
+.mlbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.45rem;display:block}
+.mf{display:flex;gap:8px;justify-content:flex-end;padding:.85rem 1.4rem;border-top:1px solid var(--border);flex-wrap:wrap}
+.f-grp{margin-bottom:.85rem}
+.f-lbl{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px}
+.f-inp,.f-ta,.f-sel{width:100%;padding:7px 11px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border .15s}
+.f-inp:focus,.f-ta:focus,.f-sel:focus{border-color:var(--accent)}
+.f-ta{resize:vertical;min-height:70px}
+.f-sel option{background:var(--bg3)}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.popt{display:flex;flex-direction:column;gap:7px;padding:.6rem 0}
+.popt label{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .15s}
+.popt label:hover{border-color:var(--border2);background:var(--bg3)}
+.popt input[type=radio]{accent-color:var(--accent);width:14px;height:14px}
 /* ZOOM */
-.zoom-ctrl{position:fixed;bottom:1.5rem;right:1.5rem;display:flex;flex-direction:column;gap:4px;z-index:50}
-.zoom-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.zoom-btn:hover{background:var(--bg3)}
-.zoom-level{font-size:11px;color:var(--text3);text-align:center;font-family:var(--mono)}
-
-@media(max-width:640px){
-  header{padding:.75rem 1rem;flex-wrap:wrap;gap:8px}
-  .logo span{font-size:13px}
-  .header-actions{gap:6px}
-  .header-actions .btn span{display:none}
-  .btn{padding:8px 10px;min-height:40px}
-  .toolbar{padding:.6rem 1rem;gap:6px}
-  .legend{display:none}
-  .stats-bar{grid-template-columns:repeat(3,1fr)}
-  .stat-card:nth-child(3){border-right:none}
-  .stat-card:nth-child(4){border-top:1px solid var(--border)}
-  .stat-num{font-size:18px}
-  .node-card{width:130px}
-  .node-card.root-node{width:160px}
-  .node-card.wing-node{width:145px}
-  .node-title{font-size:11px}
-  .node-leader{font-size:10px}
-  .node-tag{font-size:8px}
-  .tree-children{gap:8px}
-  .tree-connector-down{height:16px}
-  .toggle-btn{width:32px;height:32px;font-size:13px}
-  .slot{width:22px;height:22px;border-radius:5px}
-  .overlay{padding:.5rem;align-items:flex-end}
-  .modal{max-height:85vh;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
-  .form-row{grid-template-columns:1fr}
-  .zoom-btn{width:44px;height:44px;font-size:20px}
-  .zoom-ctrl{bottom:1rem;right:1rem;gap:6px}
-}
-
+.zc{position:fixed;bottom:1.25rem;right:1.25rem;display:flex;flex-direction:column;gap:4px;z-index:50}
+.zb{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.zb:hover,.zb:active{background:var(--bg3)}
+.zl{font-size:10px;color:var(--text3);text-align:center;font-family:var(--mono)}
 /* PRINT */
 @media print{
-  header,div.toolbar,.stats-bar,.zoom-ctrl,.overlay{display:none!important}
+  header,.tbar,.sbar,.zc,#sb,.ov{display:none!important}
+  #app{height:auto;overflow:visible}#main{overflow:visible}
+  #cv{overflow:visible!important;padding:0!important;margin-right:0!important}
+  #cr{transform:none!important;min-width:auto!important}
   body{background:#fff!important;color:#000!important}
-  #canvas-wrap{overflow:visible!important;padding:0!important;cursor:default!important}
-  #chart-root{transform:none!important;min-width:auto!important}
-  .node-card{background:#fff!important;border:1.5px solid #ccc!important;break-inside:avoid;color:#000!important}
-  .node-title{color:#000!important}.node-leader{color:#444!important}.slot-label{color:#666!important}
-  .node-head,.node-body,.node-footer{border-color:#ddd!important}
-  .tree-connector-down,.tree-children::before,.tree-children>.tree-branch::before{background:#999!important}
-  .health-green .node-health-bar{background:#16a34a!important}
-  .health-amber .node-health-bar{background:#d97706!important}
-  .health-red .node-health-bar{background:#dc2626!important}
-  .toggle-btn,.health-badge{display:none!important}
-  .print-header{display:block!important}
-  body.print-fit #canvas-wrap{display:flex;justify-content:center}
-  body.print-fit #chart-root{transform-origin:top center}
+  .nc{background:#fff!important;border:1.5px solid #ccc!important;color:#000!important}
+  .nt,.nl{color:#000!important}.sll{color:#666!important}
+  .nh,.nb,.nf{border-color:#ddd!important}
+  .tcd,.tc::before,.tc>.tb::before{background:#aaa!important}
+  .hg .nhb{background:#16a34a!important}.ha .nhb{background:#d97706!important}.hr .nhb{background:#dc2626!important}
+  .tbtn,.hbd{display:none!important}
+  .ph{display:block!important}
 }
-.print-header{display:none;text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #000}
-.print-header h1{font-size:20px;font-weight:700;color:#000}
-.print-header p{font-size:11px;color:#666;margin-top:3px}
+.ph{display:none;text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #000}
+.ph h1{font-size:20px;font-weight:700;color:#000}.ph p{font-size:11px;color:#555;margin-top:3px}
+/* MOBILE */
+@media(max-width:700px){
+  :root{--sb:100vw}
+  header{padding:.65rem 1rem}.logo span{font-size:13px}
+  .hact .btn span{display:none}.btn{padding:8px 10px;min-height:40px}
+  .tbar{padding:.5rem 1rem}
+  .sbar{grid-template-columns:repeat(3,1fr)}
+  .sc:nth-child(3){border-right:none}.sc:nth-child(4){border-top:1px solid var(--border)}
+  .sn{font-size:16px}
+  .nc{width:130px}.nc.rn{width:155px}.nc.wn{width:142px}
+  .nt{font-size:11px}.nl{font-size:10px}.ntag{font-size:8px}
+  .tc{gap:8px}.tbtn{width:30px;height:30px;font-size:12px}.slot{width:20px;height:20px}
+  #cv.sb-open{margin-right:0}
+  .f-row{grid-template-columns:1fr}
+  .ov{padding:.5rem;align-items:flex-end}.mo{border-radius:var(--rl) var(--rl) 0 0;max-height:88vh}
+  .zb{width:40px;height:40px;font-size:19px}.zc{bottom:.75rem;right:.75rem}
+}
+/* CALENDAR GRID */
+.cal-cell{min-height:70px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px;font-size:10px;vertical-align:top}
+.cal-cell.cal-empty{background:transparent;border-color:transparent}
+.cal-cell.cal-today{border-color:var(--accent);background:var(--glow)}
+.cal-day-num{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px;text-align:right}
+.cal-today-num{color:var(--accent)}
+.cal-ev{background:var(--accent);color:#fff;border-radius:3px;padding:1px 4px;margin-bottom:2px;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
 </style>
 </head>
 <body>
-
+<div id="app">
 <header>
-  <div class="logo">
-    <div class="logo-icon">M</div>
-    <span>Igreja Mosaico — Organograma</span>
-  </div>
-  <div class="header-actions">
-    <button class="btn" onclick="openPrintModal()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      <span>Imprimir</span>
-    </button>
-    <button class="btn" onclick="exportData()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span>Exportar JSON</span>
-    </button>
-    <button class="btn btn-primary" onclick="openAddModal(null)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>Novo Nó</span>
-    </button>
+  <div class="logo"><div class="logo-icon">M</div><span>Igreja Mosaico — Organograma</span></div>
+  <div class="hact">
+    <button class="btn" onclick="openPrint()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span>Imprimir</span></button>
+    <button class="btn" onclick="exportJSON()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>JSON</span></button>
+    <button class="btn btn-p" onclick="openAdd(null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Novo</span></button>
   </div>
 </header>
-
-<div class="stats-bar" id="stats-bar"></div>
-
-<div class="toolbar">
-  <div class="search-wrap">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input class="search-input" placeholder="Buscar ministério, líder ou voluntário…" id="search-input" oninput="renderTree()"/>
-  </div>
-  <div class="toolbar-sep"></div>
+<div class="sbar" id="sbar"></div>
+<div class="tbar">
+  <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="si" id="q" placeholder="Buscar ministério, líder…" oninput="draw()"/></div>
   <button class="btn" onclick="expandAll()">Expandir tudo</button>
   <button class="btn" onclick="collapseAll()">Recolher tudo</button>
-  <div class="legend">
-    <div class="legend-item"><div class="dot" style="background:var(--green)"></div> Saudável</div>
-    <div class="legend-item"><div class="dot" style="background:var(--amber)"></div> Atenção</div>
-    <div class="legend-item"><div class="dot" style="background:var(--red)"></div> Crítico</div>
-    <div class="legend-item"><div class="slot filled" style="display:inline-block;cursor:default"></div> Ocupada</div>
-    <div class="legend-item"><div class="slot vacant" style="display:inline-block;cursor:default"></div> Vaga</div>
+</div>
+<div id="main">
+  <div id="cv">
+    <div class="ph"><h1>Igreja Mosaico — Organograma</h1><p id="pd"></p></div>
+    <div id="cr"></div>
+  </div>
+  <div id="sb">
+    <div class="sbc" id="sbc"></div>
+    <div class="sbh" id="sbh"></div>
+    <div class="sb-tabs" id="sbt"></div>
+    <div class="sbb" id="sbb"></div>
   </div>
 </div>
-
-<div id="canvas-wrap">
-  <div class="print-header">
-    <h1>Igreja Mosaico — Organograma</h1>
-    <p id="print-date"></p>
-  </div>
-  <div id="chart-root"></div>
 </div>
-
-<div class="zoom-ctrl">
-  <button class="zoom-btn" onclick="zoom(0.1)">+</button>
-  <div class="zoom-level" id="zoom-label">100%</div>
-  <button class="zoom-btn" onclick="zoom(-0.1)">−</button>
-  <button class="zoom-btn" style="font-size:12px" onclick="resetZoom()">⊡</button>
+<div class="zc">
+  <button class="zb" onclick="zm(0.1)">+</button>
+  <div class="zl" id="zl">100%</div>
+  <button class="zb" onclick="zm(-0.1)">−</button>
+  <button class="zb" style="font-size:12px" onclick="zr()">⊡</button>
 </div>
-
 <!-- PRINT MODAL -->
-<div class="overlay" id="print-overlay" style="display:none" onclick="closeModal('print-overlay')">
-  <div class="modal" style="max-width:420px" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div class="modal-title">Opções de Impressão</div>
-      <button class="modal-close" onclick="closeModal('print-overlay')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="ms-label">Formato</div>
-      <div class="print-opt">
-        <label><input type="radio" name="pmode" value="normal" checked/> Normal — múltiplas páginas se necessário</label>
-        <label><input type="radio" name="pmode" value="fit"/> Página única — reduz escala para caber em uma folha</label>
-      </div>
-      <div class="ms-label" style="margin-top:1rem">Estado do organograma</div>
-      <div class="print-opt">
-        <label><input type="radio" name="pstate" value="current" checked/> Como está na tela</label>
-        <label><input type="radio" name="pstate" value="expanded"/> Expandir tudo antes de imprimir</label>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('print-overlay')">Cancelar</button>
-      <button class="btn btn-primary" onclick="executePrint()">Imprimir</button>
-    </div>
+<div class="ov" id="pm" style="display:none" onclick="cm('pm')">
+<div class="mo" style="max-width:380px" onclick="event.stopPropagation()">
+  <div class="mh"><div class="mt">Imprimir</div><button class="mcl" onclick="cm('pm')">✕</button></div>
+  <div class="mb">
+    <span class="mlbl">Formato</span><div class="popt"><label><input type="radio" name="pmd" value="n" checked/> Normal — múltiplas páginas</label><label><input type="radio" name="pmd" value="f"/> Página única — escala automática</label></div>
+    <span class="mlbl" style="margin-top:1rem;display:block">Estado</span><div class="popt"><label><input type="radio" name="pst" value="c" checked/> Como está</label><label><input type="radio" name="pst" value="e"/> Expandir tudo antes</label></div>
   </div>
-</div>
-
-<!-- VIEW MODAL (ministério) -->
-<div class="overlay" id="view-overlay" style="display:none" onclick="closeModal('view-overlay')">
-  <div class="modal modal-lg" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="vm-title"></div>
-        <div class="modal-subtitle" id="vm-subtitle"></div>
-      </div>
-      <button class="modal-close" onclick="closeModal('view-overlay')">✕</button>
-    </div>
-    <div class="modal-body" id="vm-body"></div>
-    <div class="modal-footer">
-      <button class="btn btn-sm" id="vm-add-child-btn">+ Filho</button>
-      <button class="btn btn-sm" id="vm-edit-btn">Editar nó</button>
-      <button class="btn btn-sm" style="color:var(--red)" id="vm-delete-btn">Remover</button>
-    </div>
+  <div class="mf"><button class="btn" onclick="cm('pm')">Cancelar</button><button class="btn btn-p" onclick="doPrint()">Imprimir</button></div>
+</div></div>
+<!-- POS VIEW MODAL -->
+<div class="ov" id="pvm" style="display:none" onclick="cm('pvm')">
+<div class="mo mo-lg" onclick="event.stopPropagation()">
+  <div class="mh"><div><div class="mt" id="pvt"></div><div class="ms" id="pvs"></div></div><button class="mcl" onclick="cm('pvm')">✕</button></div>
+  <div class="mb" id="pvb"></div>
+  <div class="mf"><button class="btn btn-sm" id="pve">Editar posição</button></div>
+</div></div>
+<!-- POS EDIT MODAL -->
+<div class="ov" id="pem" style="display:none" onclick="cm('pem')">
+<div class="mo mo-lg" onclick="event.stopPropagation()">
+  <div class="mh"><div class="mt" id="pet"></div><button class="mcl" onclick="cm('pem')">✕</button></div>
+  <div class="mb">
+    <input type="hidden" id="pe-nid"/><input type="hidden" id="pe-idx"/>
+    <div class="f-row"><div class="f-grp"><label class="f-lbl">Nome *</label><input class="f-inp" id="pe-nm"/></div><div class="f-grp"><label class="f-lbl">Status</label><select class="f-sel" id="pe-fi"><option value="true">Ocupada</option><option value="false">Vaga</option></select></div></div>
+    <div class="f-grp"><label class="f-lbl">Job Description</label><textarea class="f-ta" id="pe-jd" style="min-height:85px"></textarea></div>
+    <div class="f-grp"><label class="f-lbl">Competências (por vírgula)</label><input class="f-inp" id="pe-sk"/></div>
+    <div class="f-row"><div class="f-grp"><label class="f-lbl">Sucessor</label><input class="f-inp" id="pe-su"/></div><div class="f-grp"><label class="f-lbl">Carga (h/sem)</label><input class="f-inp" id="pe-hr" type="number"/></div></div>
+    <div class="f-grp"><label class="f-lbl">Voluntários</label><div id="pe-vl" style="margin-bottom:6px"></div><div style="display:flex;gap:6px"><input class="f-inp" id="pe-vi" placeholder="Nome" style="flex:1"/><button class="btn btn-sm" onclick="addVol()">+ Add</button></div></div>
   </div>
-</div>
-
-<!-- POSITION (Job Description) MODAL -->
-<div class="overlay" id="pos-overlay" style="display:none" onclick="closeModal('pos-overlay')">
-  <div class="modal modal-lg" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="pm-title"></div>
-        <div class="modal-subtitle" id="pm-subtitle"></div>
-      </div>
-      <button class="modal-close" onclick="closeModal('pos-overlay')">✕</button>
-    </div>
-    <div class="modal-body" id="pm-body"></div>
-    <div class="modal-footer">
-      <button class="btn btn-sm" id="pm-edit-btn">Editar posição</button>
-    </div>
+  <div class="mf"><button class="btn" onclick="cm('pem')">Cancelar</button><button class="btn btn-p" onclick="savePE()">Salvar</button></div>
+</div></div>
+<!-- NODE EDIT MODAL -->
+<div class="ov" id="nem" style="display:none" onclick="cm('nem')">
+<div class="mo" onclick="event.stopPropagation()">
+  <div class="mh"><div class="mt" id="net"></div><button class="mcl" onclick="cm('nem')">✕</button></div>
+  <div class="mb">
+    <input type="hidden" id="ne-id"/><input type="hidden" id="ne-par"/>
+    <div class="f-row"><div class="f-grp"><label class="f-lbl">Nome *</label><input class="f-inp" id="ne-nm"/></div><div class="f-grp"><label class="f-lbl">Líder</label><input class="f-inp" id="ne-ld"/></div></div>
+    <div class="f-grp"><label class="f-lbl">Tipo</label><select class="f-sel" id="ne-tp"><option value="">Ministério / Departamento</option><option value="exec">Asa Executiva</option><option value="min">Asa Ministerial</option><option value="adv">Comitê / Assessoria</option></select></div>
+    <div class="f-grp"><label class="f-lbl">Atividades (uma por linha)</label><textarea class="f-ta" id="ne-ac"></textarea></div>
+    <div class="f-grp"><label class="f-lbl">Competências (por vírgula)</label><input class="f-inp" id="ne-sk"/></div>
+    <div class="f-row"><div class="f-grp"><label class="f-lbl">Orçamento R$/mês</label><input class="f-inp" id="ne-bg" type="number"/></div><div class="f-grp"><label class="f-lbl">Saúde</label><select class="f-sel" id="ne-hl"><option value="green">🟢 Saudável</option><option value="amber">🟡 Atenção</option><option value="red">🔴 Crítico</option></select></div></div>
+    <div class="f-grp"><label class="f-lbl">Posições</label><div id="ne-pl" style="display:flex;flex-direction:column;gap:5px;margin-bottom:6px"></div><button class="btn btn-sm" onclick="addPR()">+ Posição</button></div>
   </div>
-</div>
-
-<!-- POSITION EDIT MODAL -->
-<div class="overlay" id="pos-edit-overlay" style="display:none" onclick="closeModal('pos-edit-overlay')">
-  <div class="modal modal-lg" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div class="modal-title" id="pem-title">Editar Posição</div>
-      <button class="modal-close" onclick="closeModal('pos-edit-overlay')">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="pem-node-id"/>
-      <input type="hidden" id="pem-pos-idx"/>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Nome da Posição *</label>
-          <input class="form-input" id="pem-name" placeholder="Ex: Fotógrafo"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-select" id="pem-filled">
-            <option value="true">Ocupada</option>
-            <option value="false">Vaga</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Responsabilidades / Job Description</label>
-        <textarea class="form-textarea" id="pem-jd" placeholder="Descreva as responsabilidades desta posição…" style="min-height:100px"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Competências Necessárias (separadas por vírgula)</label>
-        <input class="form-input" id="pem-skills" placeholder="Ex: Fotografia, Edição, Agilidade"/>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Sucessor em Potencial</label>
-          <input class="form-input" id="pem-successor" placeholder="Nome"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Carga horária (h/sem)</label>
-          <input class="form-input" id="pem-hours" type="number" placeholder="Ex: 4"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Voluntários nesta posição</label>
-        <div id="pem-vols-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
-        <div class="vol-add-row">
-          <input class="form-input" id="pem-vol-input" placeholder="Nome do voluntário" style="flex:1"/>
-          <button class="btn btn-sm" onclick="addVolunteerToPosForm()">+ Adicionar</button>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('pos-edit-overlay')">Cancelar</button>
-      <button class="btn btn-primary" onclick="savePosEdit()">Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- NODE ADD/EDIT MODAL -->
-<div class="overlay" id="edit-overlay" style="display:none" onclick="closeModal('edit-overlay')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div class="modal-title" id="em-title">Novo Ministério</div>
-      <button class="modal-close" onclick="closeModal('edit-overlay')">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="em-id"/>
-      <input type="hidden" id="em-parent"/>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Nome *</label>
-          <input class="form-input" id="em-name" placeholder="Ex: Comunicação"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Líder</label>
-          <input class="form-input" id="em-leader" placeholder="Nome do líder"/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tipo de nó</label>
-        <select class="form-select" id="em-type">
-          <option value="">Ministério / Departamento</option>
-          <option value="exec">Asa Executiva</option>
-          <option value="min">Asa Ministerial</option>
-          <option value="advisory">Comitê / Assessoria</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Atividades Principais (uma por linha)</label>
-        <textarea class="form-textarea" id="em-activities" placeholder="Governança&#10;Decisões estratégicas"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Competências (separadas por vírgula)</label>
-        <input class="form-input" id="em-skills" placeholder="Liderança, Gestão"/>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Orçamento Mensal (R$)</label>
-          <input class="form-input" id="em-budget" type="number" placeholder="0"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Saúde</label>
-          <select class="form-select" id="em-health">
-            <option value="green">🟢 Saudável</option>
-            <option value="amber">🟡 Atenção</option>
-            <option value="red">🔴 Crítico</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Posições (adicione aqui; detalhes via clique no card)</label>
-        <div id="positions-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
-        <button class="btn btn-sm" type="button" onclick="addPositionRow()">+ Adicionar posição</button>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('edit-overlay')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNode()">Salvar</button>
-    </div>
-  </div>
-</div>
-
+  <div class="mf"><button class="btn" onclick="cm('nem')">Cancelar</button><button class="btn btn-p" onclick="saveNE()">Salvar</button></div>
+</div></div>
 <script>
-// ── DATA ──
-let data = {
-  id:'1',name:'Conselho',leader:'',
-  health:'green',budget:0,type:'',
-  activities:['Governança da igreja','Decisões estratégicas e doutrinais','Supervisão pastoral'],
-  skills:['Liderança pastoral','Teologia','Governança'],
+// ═══════════ DATA ═══════════
+let D={
+  id:'1',name:'Conselho',leader:'',health:'green',budget:0,type:'',
+  activities:['Governança da igreja','Decisões estratégicas','Supervisão pastoral'],
+  skills:['Liderança pastoral','Teologia','Governança'],processes:[],
   positions:[
     {name:'Pastor Presidente',filled:true,successor:'',jd:'',skills:[],volunteers:['Douglas Queiroz'],hours:0},
     {name:'Pastor Auxiliar',filled:true,successor:'',jd:'',skills:[],volunteers:['João Marcus'],hours:0},
@@ -467,761 +315,633 @@ let data = {
     {name:'Presbítero',filled:true,successor:'',jd:'',skills:[],volunteers:['Vinicius Queiroz'],hours:0},
     {name:'Presbítero',filled:true,successor:'',jd:'',skills:[],volunteers:['Fernando Camargo'],hours:0}
   ],
-  children:[
-    {
-      id:'ps',name:'Pastor Sênior',leader:'Douglas Queiroz',
-      health:'green',budget:0,type:'',
-      activities:['Direção espiritual e estratégica','Supervisão das duas asas'],
-      skills:['Pregação','Liderança','Visão estratégica'],
-      positions:[
-        {name:'Pastor Sênior',filled:true,successor:'',jd:'',skills:[],volunteers:['Douglas Queiroz'],hours:40},
-        {name:'Pastor Auxiliar',filled:true,successor:'',jd:'',skills:[],volunteers:['João Marcus'],hours:40}
-      ],
-      children:[
-        {
-          id:'exec',name:'Gestão Executiva',leader:'',health:'green',budget:0,type:'exec',
-          activities:['Coordenação da asa executiva','Infraestrutura e processos'],skills:['Gestão','Liderança executiva'],
-          positions:[],
+  children:[{
+    id:'ps',name:'Pastor Sênior',leader:'Douglas Queiroz',health:'green',budget:0,type:'',
+    activities:['Direção espiritual e estratégica','Supervisão das duas asas'],
+    skills:['Pregação','Liderança','Visão estratégica'],processes:[],
+    positions:[
+      {name:'Pastor Sênior',filled:true,successor:'',jd:'',skills:[],volunteers:['Douglas Queiroz'],hours:40},
+      {name:'Pastor Auxiliar',filled:true,successor:'',jd:'',skills:[],volunteers:['João Marcus'],hours:40}
+    ],
+    children:[
+      {id:'exec',name:'Gestão Executiva',leader:'',health:'green',budget:0,type:'exec',
+       activities:['Coordenação executiva','Infraestrutura e processos'],skills:['Gestão'],processes:[],positions:[],
+       children:[
+         {id:'ge',name:'Gestão',leader:'Benicio Cruz',health:'green',budget:0,type:'',
+          activities:['Infraestrutura','Controles internos','Administração'],skills:['Administração'],processes:[],
+          positions:[
+            {name:'Zelador',filled:true,successor:'',jd:'',skills:[],volunteers:['Iracema'],hours:0},
+            {name:'Aux. Administrativo / Secretária',filled:false,successor:'',jd:'',skills:[],volunteers:[],hours:0},
+            {name:'Escritório Contabilidade',filled:true,successor:'',jd:'Serviço contábil externo.',skills:[],volunteers:['Externo'],hours:0}
+          ],children:[]},
+         {id:'fi',name:'Finanças',leader:'Diego Bizzo',health:'green',budget:0,type:'',
+          activities:['Tesouraria','Planejamento financeiro','Prestação de contas'],skills:['Contabilidade','Excel'],processes:[],positions:[],children:[]},
+         {id:'pp',name:'Pessoas & Processos',leader:'Benicio Cruz',health:'green',budget:0,type:'',
+          activities:['Capacitação','Gerenciamento de voluntários','Melhoria de processos'],skills:['RH','Gestão de pessoas'],processes:[],
+          positions:[
+            {name:'Pessoas',filled:true,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
+            {name:'Processos',filled:true,successor:'',jd:'',skills:[],volunteers:['Jésica'],hours:0},
+            {name:'Desenvolvimento',filled:true,successor:'',jd:'',skills:[],volunteers:['Clara'],hours:0}
+          ],children:[]}
+       ]},
+      {id:'min',name:'Gestão Ministerial',leader:'',health:'green',budget:0,type:'min',
+       activities:['Coordenação ministerial','Integração entre ministérios'],skills:['Liderança pastoral'],processes:[],positions:[],
+       children:[
+         {id:'co',name:'Comunhão',leader:'',health:'green',budget:0,type:'',
+          activities:['Âncora','CORE','Pequenos Grupos'],skills:['Hospitalidade','Pastoral'],processes:[],positions:[],
           children:[
-            {
-              id:'gestao',name:'Gestão',leader:'Benicio Cruz',health:'green',budget:0,type:'',
-              activities:['Infraestrutura','Controles internos','Administração estratégica'],
-              skills:['Administração','Controles internos'],
-              positions:[
-                {name:'Zelador',filled:true,successor:'',jd:'',skills:[],volunteers:['Iracema'],hours:0},
-                {name:'Aux. Administrativo / Secretária',filled:false,successor:'',jd:'',skills:[],volunteers:[],hours:0},
-                {name:'Escritório Contabilidade',filled:true,successor:'',jd:'Serviço contábil externo.',skills:[],volunteers:['Externo'],hours:0}
-              ],children:[]
-            },
-            {
-              id:'fin',name:'Finanças',leader:'Diego Bizzo',health:'green',budget:0,type:'',
-              activities:['Tesouraria','Planejamento financeiro','Prestação de contas'],
-              skills:['Contabilidade','Gestão financeira','Excel'],
-              positions:[],children:[]
-            },
-            {
-              id:'pessoas',name:'Pessoas & Processos',leader:'Benicio Cruz',health:'green',budget:0,type:'',
-              activities:['Capacitação de pessoas','Gerenciamento de voluntários','Melhoria de processos'],
-              skills:['RH','Gestão de pessoas'],
-              positions:[
-                {name:'Pessoas',filled:true,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                {name:'Processos',filled:true,successor:'',jd:'',skills:[],volunteers:['Jésica'],hours:0},
-                {name:'Desenvolvimento',filled:true,successor:'',jd:'',skills:[],volunteers:['Clara'],hours:0}
-              ],children:[]
-            }
-          ]
-        },
-        {
-          id:'min',name:'Gestão Ministerial',leader:'',health:'green',budget:0,type:'min',
-          activities:['Coordenação da asa ministerial','Integração entre ministérios'],skills:['Liderança pastoral','Gestão ministerial'],
-          positions:[],
+            {id:'an',name:'Âncora',leader:'Clara / Nicolas',health:'green',budget:0,type:'',
+             activities:['Integração de novos membros'],skills:['Hospitalidade','Acolhimento'],processes:[],
+             positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'cr',name:'CORE',leader:'Renan / Ana Bia',health:'green',budget:0,type:'',
+             activities:['Relacionamento e discipulado'],skills:['Discipulado'],processes:[],
+             positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'pg',name:'Pequenos Grupos',leader:'TBD',health:'amber',budget:0,type:'',
+             activities:['Coordenação dos PGs','Formação de líderes'],skills:['Liderança','Discipulado'],processes:[],
+             positions:[
+               {name:'PG Icaraí 01',filled:true,successor:'',jd:'',skills:[],volunteers:['André Costa'],hours:0},
+               {name:'PG Icaraí 02',filled:true,successor:'',jd:'',skills:[],volunteers:['Alexandre','Joelma'],hours:0},
+               {name:'PG Icaraí 03',filled:true,successor:'',jd:'',skills:[],volunteers:['Fernando','Priscila'],hours:0},
+               {name:'PG Icaraí 04',filled:true,successor:'',jd:'',skills:[],volunteers:['Paulo Accioly','Livia'],hours:0},
+               {name:'PG Santa Rosa 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Ferraz','Roberta'],hours:0},
+               {name:'PG Santa Rosa 02',filled:false,successor:'',jd:'',skills:[],volunteers:[],hours:0},
+               {name:'PG Pendotiba 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Otavio','Roberto'],hours:0},
+               {name:'PG RO 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Oscar','Aline'],hours:0},
+               {name:'PG RO 2',filled:true,successor:'',jd:'',skills:[],volunteers:['Gustavo','Michele'],hours:0},
+               {name:'PG RO 3',filled:true,successor:'',jd:'',skills:[],volunteers:['Liandro','Tereza'],hours:0},
+               {name:'PG RO 4',filled:true,successor:'',jd:'',skills:[],volunteers:['Diego','Tracy'],hours:0},
+               {name:'PG RO 5 (Interinos)',filled:true,successor:'',jd:'',skills:[],volunteers:['Liandro','Tereza'],hours:0},
+               {name:'PG RO 6 Domingos',filled:true,successor:'',jd:'',skills:[],volunteers:['Flávia Saboya','Marcão'],hours:0},
+               {name:'PG São Francisco 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Alexandre','Fernanda'],hours:0},
+               {name:'PG Alcantara/Trindade 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Staney','Isabelle','Romeu','Thays'],hours:0},
+               {name:'PG Itaipuaçu 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Marcelo','Raphaela'],hours:0},
+               {name:'PG Adolescentes 01 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Gabriel Queiroz','Vitória Costa','Nicolas','Clara'],hours:0},
+               {name:'PG Adolescentes 02 - Icaraí',filled:true,successor:'',jd:'',skills:[],volunteers:['Matheus','Julia Ferraz','Daniel Paixão','Bia Medeiros'],hours:0},
+               {name:'PG Jovens 01 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Lucas Gallo'],hours:0},
+               {name:'PG Jovens 02 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Mateus Rodrigues','Rebeca'],hours:0}
+             ],children:[]}
+          ]},
+         {id:'cg',name:'Congregação',leader:'',health:'green',budget:0,type:'',
+          activities:['Gestão de Culto','Música','Mídia','Áudio','Comunicação'],skills:['Música','Design','Comunicação'],processes:[],positions:[],
           children:[
-            {
-              id:'comunhao',name:'Comunhão',leader:'',health:'green',budget:0,type:'',
-              activities:['Âncora','CORE','Pequenos Grupos'],skills:['Hospitalidade','Liderança de grupos','Pastoral'],
-              positions:[],
-              children:[
-                {
-                  id:'ancora',name:'Âncora',leader:'Clara / Nicolas',health:'green',budget:0,type:'',
-                  activities:['Ambiente de integração de novos membros'],skills:['Hospitalidade','Acolhimento'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'core',name:'CORE',leader:'Renan / Ana Bia',health:'green',budget:0,type:'',
-                  activities:['Grupo de relacionamento e discipulado'],skills:['Discipulado','Relacionamento'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'pgs',name:'Pequenos Grupos',leader:'TBD',health:'amber',budget:0,type:'',
-                  activities:['Coordenação e suporte dos PGs','Formação de novos líderes de PG'],skills:['Liderança','Discipulado','Gestão de grupos'],
-                  positions:[
-                    {name:'PG Icaraí 01',filled:true,successor:'',jd:'',skills:[],volunteers:['André Costa'],hours:0},
-                    {name:'PG Icaraí 02',filled:true,successor:'',jd:'',skills:[],volunteers:['Alexandre','Joelma'],hours:0},
-                    {name:'PG Icaraí 03',filled:true,successor:'',jd:'',skills:[],volunteers:['Fernando','Priscila'],hours:0},
-                    {name:'PG Icaraí 04',filled:true,successor:'',jd:'',skills:[],volunteers:['Paulo Accioly','Livia'],hours:0},
-                    {name:'PG Santa Rosa 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Ferraz','Roberta'],hours:0},
-                    {name:'PG Santa Rosa 02',filled:false,successor:'',jd:'',skills:[],volunteers:[],hours:0},
-                    {name:'PG Pendotiba 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Otavio','Roberto'],hours:0},
-                    {name:'PG RO 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Oscar','Aline'],hours:0},
-                    {name:'PG RO 2',filled:true,successor:'',jd:'',skills:[],volunteers:['Gustavo','Michele'],hours:0},
-                    {name:'PG RO 3',filled:true,successor:'',jd:'',skills:[],volunteers:['Liandro','Tereza'],hours:0},
-                    {name:'PG RO 4',filled:true,successor:'',jd:'',skills:[],volunteers:['Diego','Tracy'],hours:0},
-                    {name:'PG RO 5 (Interinos)',filled:true,successor:'',jd:'',skills:[],volunteers:['Liandro','Tereza'],hours:0},
-                    {name:'PG RO 6 Domingos',filled:true,successor:'',jd:'',skills:[],volunteers:['Flávia Saboya','Marcão'],hours:0},
-                    {name:'PG São Francisco 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Alexandre','Fernanda'],hours:0},
-                    {name:'PG Alcantara/Trindade 1',filled:true,successor:'',jd:'',skills:[],volunteers:['Staney','Isabelle','Romeu','Thays'],hours:0},
-                    {name:'PG Itaipuaçu 01',filled:true,successor:'',jd:'',skills:[],volunteers:['Marcelo','Raphaela'],hours:0},
-                    {name:'PG Adolescentes 01 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Gabriel Queiroz','Vitória Costa','Nicolas','Clara'],hours:0},
-                    {name:'PG Adolescentes 02 - Icaraí',filled:true,successor:'',jd:'',skills:[],volunteers:['Matheus','Julia Ferraz','Daniel Paixão','Bia Medeiros'],hours:0},
-                    {name:'PG Jovens 01 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Lucas Gallo'],hours:0},
-                    {name:'PG Jovens 02 - RO',filled:true,successor:'',jd:'',skills:[],volunteers:['Mateus Rodrigues','Rebeca'],hours:0}
-                  ],children:[]
-                }
-              ]
-            },
-            {
-              id:'congregacao',name:'Congregação',leader:'',health:'green',budget:0,type:'',
-              activities:['Gestão de Culto','Música','Mídia','Áudio','Comunicação'],skills:['Música','Design','Comunicação','Áudio'],
-              positions:[],
-              children:[
-                {
-                  id:'gestao-culto',name:'Gestão de Culto',leader:'Benicio Cruz',health:'green',budget:0,type:'',
-                  activities:['Coordenação da experiência do culto'],skills:['Liderança','Gestão de eventos','Hospitalidade'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'musica',name:'Música',leader:'Edu Braga',health:'green',budget:0,type:'',
-                  activities:['Direção musical','Ensaios','Repertório'],skills:['Musicalidade','Regência','Liderança'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'midia',name:'Mídia',leader:'Fabricio Reis',health:'green',budget:0,type:'',
-                  activities:['Produção de vídeo','Transmissão ao vivo','Conteúdo visual'],skills:['Edição de vídeo','Streaming','Design'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'audio',name:'Áudio',leader:'Marcelo Castro',health:'green',budget:0,type:'',
-                  activities:['Operação de som','Manutenção de equipamentos'],skills:['Áudio','Pro Tools','Eletrônica'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'midia-fotos',name:'Mídia (Fotos)',leader:'Ed Medeiros',health:'green',budget:0,type:'',
-                  activities:['Cobertura fotográfica dos cultos e eventos'],skills:['Fotografia','Lightroom','Edição'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'comunicacao',name:'Comunicação',leader:'Edu Braga',health:'green',budget:0,type:'',
-                  activities:['Redes sociais','Design','Conteúdo — Janela 30/30'],skills:['Design gráfico','Social media','Copywriting'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                }
-              ]
-            },
-            {
-              id:'servico',name:'Serviço',leader:'',health:'green',budget:0,type:'',
-              activities:['Conectores','Segurança e Apoio','Capelania e Visitação'],skills:['Hospitalidade','Segurança','Cuidado pastoral'],
-              positions:[],
-              children:[
-                {
-                  id:'conectores',name:'Conectores',leader:'Flavia Saboya',health:'green',budget:0,type:'',
-                  activities:['Recepção e conexão de visitantes'],skills:['Hospitalidade','Comunicação','Acolhimento'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'seguranca',name:'Segurança e Apoio',leader:'Felix',health:'green',budget:0,type:'',
-                  activities:['Segurança nos cultos','Apoio operacional'],skills:['Segurança','Logística','Atenção'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'capelania',name:'Capelania e Visitação',leader:'Fernando Camargo',health:'green',budget:0,type:'',
-                  activities:['Visitação hospitalar','Acompanhamento de luto','Cuidado pastoral'],skills:['Pastoral','Empatia','Escuta ativa'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                }
-              ]
-            },
-            {
-              id:'formacao',name:'Formação',leader:'',health:'green',budget:0,type:'',
-              activities:['Ensino','Mosaico Kids'],skills:['Pedagogia','Discipulado','Teologia'],
-              positions:[],
-              children:[
-                {
-                  id:'ensino',name:'Ensino',leader:'João Marcus',health:'green',budget:0,type:'',
-                  activities:['Ensino Dominical','DNA','Desenvolvimento de líderes'],skills:['Teologia','Didática','Pregação'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'kids',name:'Mosaico Kids',leader:'Kellyd Queiroz',health:'green',budget:0,type:'',
-                  activities:['Ministério infantil','Professores','Eventos kids'],skills:['Pedagogia','Criatividade','Liderança'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                }
-              ]
-            },
-            {
-              id:'familia',name:'Família',leader:'',health:'green',budget:0,type:'',
-              activities:['Homens','Mulheres','Casais'],skills:['Aconselhamento','Pastoral familiar','Liderança'],
-              positions:[],
-              children:[
-                {
-                  id:'homens',name:'Homens',leader:'TBD',health:'amber',budget:0,type:'',
-                  activities:['Ministério de homens'],skills:['Liderança','Discipulado'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'mulheres',name:'Mulheres',leader:'Renata Queiroz',health:'green',budget:0,type:'',
-                  activities:['Ministério de mulheres'],skills:['Liderança','Pastoral','Acolhimento'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                },
-                {
-                  id:'casais',name:'Casais',leader:'Vinicius Queiroz',health:'green',budget:0,type:'',
-                  activities:['Ministério de casais'],skills:['Aconselhamento','Pastoral familiar'],
-                  positions:[
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},
-                    {name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}
-                  ],children:[]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
+            {id:'gc',name:'Gestão de Culto',leader:'Benicio Cruz',health:'green',budget:0,type:'',activities:['Coordenação da experiência do culto'],skills:['Liderança','Gestão de eventos'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'mu',name:'Música',leader:'Edu Braga',health:'green',budget:0,type:'',activities:['Direção musical','Ensaios','Repertório'],skills:['Musicalidade','Regência'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'mi',name:'Mídia',leader:'Fabricio Reis',health:'green',budget:0,type:'',activities:['Produção de vídeo','Transmissão ao vivo'],skills:['Edição de vídeo','Streaming'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'au',name:'Áudio',leader:'Marcelo Castro',health:'green',budget:0,type:'',activities:['Operação de som','Manutenção'],skills:['Áudio','Pro Tools'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'mf',name:'Mídia (Fotos)',leader:'Ed Medeiros',health:'green',budget:0,type:'',activities:['Cobertura fotográfica'],skills:['Fotografia','Lightroom'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'cm2',name:'Comunicação',leader:'Edu Braga',health:'green',budget:0,type:'',activities:['Redes sociais','Design','Janela 30/30'],skills:['Design gráfico','Social media','Copywriting'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]}
+          ]},
+         {id:'sv',name:'Serviço',leader:'',health:'green',budget:0,type:'',
+          activities:['Conectores','Segurança','Capelania'],skills:['Hospitalidade','Segurança','Pastoral'],processes:[],positions:[],
+          children:[
+            {id:'cn',name:'Conectores',leader:'Flavia Saboya',health:'green',budget:0,type:'',activities:['Recepção de visitantes'],skills:['Hospitalidade','Acolhimento'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'sg',name:'Segurança e Apoio',leader:'Felix',health:'green',budget:0,type:'',activities:['Segurança nos cultos','Apoio operacional'],skills:['Segurança','Logística'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'cp',name:'Capelania e Visitação',leader:'Fernando Camargo',health:'green',budget:0,type:'',activities:['Visitação hospitalar','Acompanhamento de luto'],skills:['Pastoral','Empatia'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]}
+          ]},
+         {id:'fo',name:'Formação',leader:'',health:'green',budget:0,type:'',
+          activities:['Ensino','Mosaico Kids'],skills:['Pedagogia','Discipulado','Teologia'],processes:[],positions:[],
+          children:[
+            {id:'en',name:'Ensino',leader:'João Marcus',health:'green',budget:0,type:'',activities:['Ensino Dominical','DNA','Dev. de líderes'],skills:['Teologia','Didática'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'ki',name:'Mosaico Kids',leader:'Kellyd Queiroz',health:'green',budget:0,type:'',activities:['Ministério infantil','Professores','Eventos kids'],skills:['Pedagogia','Criatividade'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]}
+          ]},
+         {id:'fa',name:'Família',leader:'',health:'green',budget:0,type:'',
+          activities:['Homens','Mulheres','Casais'],skills:['Aconselhamento','Pastoral familiar'],processes:[],positions:[],
+          children:[
+            {id:'hm',name:'Homens',leader:'TBD',health:'amber',budget:0,type:'',activities:['Ministério de homens'],skills:['Liderança','Discipulado'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'ml',name:'Mulheres',leader:'Renata Queiroz',health:'green',budget:0,type:'',activities:['Ministério de mulheres'],skills:['Liderança','Pastoral'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]},
+            {id:'ca',name:'Casais',leader:'Vinicius Queiroz',health:'green',budget:0,type:'',activities:['Ministério de casais'],skills:['Aconselhamento','Pastoral familiar'],processes:[],positions:[{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0},{name:'TBD',filled:false,successor:'',jd:'',skills:[],volunteers:['equipe'],hours:0}],children:[]}
+          ]}
+       ]}
+    ]
+  }]
 };
-
-let collapseState={}, zoomLevel=1, currentViewId=null, currentPosRef=null;
-
-// ── UTILS ──
-function findNode(tree,id){
-  if(tree.id===id) return tree;
-  for(let c of (tree.children||[])){const f=findNode(c,id);if(f) return f;}
-  return null;
+// ═══════════ STATE ═══════════
+let CS={},ZL=1,SID=null,STAB='proc',PREF=null;
+let MEMBROS=parseInt(localStorage.getItem('mosaico_membros'))||0;
+// ═══════════ UTILS ═══════════
+function fn(t,id){if(t.id===id)return t;for(let c of(t.children||[])){const r=fn(c,id);if(r)return r;}return null;}
+function rn(t,id){t.children=(t.children||[]).filter(c=>c.id!==id);for(let c of t.children)rn(c,id);}
+function gp(t,id,p=[]){const np=[...p,{id:t.id,name:t.name}];if(t.id===id)return np;for(let c of(t.children||[])){const r=gp(c,id,np);if(r)return r;}return null;}
+function gid(){return 'n'+Date.now().toString(36);}
+function fmt(n){return n?'R$ '+Number(n).toLocaleString('pt-BR'):'—';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function avols(){const s=new Set();function w(n){for(let p of(n.positions||[]))for(let v of(p.volunteers||[]))if(v.trim())s.add(v.trim());for(let c of(n.children||[]))w(c);}w(D);return s;}
+function stats(){let m=0,tp=0,fp=0,bg=0;function w(n){m++;bg+=Number(n.budget)||0;for(let p of(n.positions||[])){tp++;if(p.filled)fp++;}for(let c of(n.children||[]))w(c);}w(D);return{m,tp,fp,bg,v:avols().size};}
+function sm(n,q){if(!q)return true;const l=q.toLowerCase();return n.name.toLowerCase().includes(l)||(n.leader||'').toLowerCase().includes(l)||(n.activities||[]).some(a=>a.toLowerCase().includes(l));}
+function nv(n,q){if(!q)return true;if(sm(n,q))return true;return(n.children||[]).some(c=>nv(c,q));}
+// ═══════════ STATS BAR ═══════════
+function drawStats(){
+  const s=stats();const pct=s.tp?Math.round(s.fp/s.tp*100):0;
+  const volPct=MEMBROS>0?Math.round(s.v/MEMBROS*100):null;
+  document.getElementById('sbar').innerHTML=`
+    <div class="sc"><div class="sn">${s.m}</div><div class="sl">Ministérios</div></div>
+    <div class="sc"><div class="sn">${s.fp}/${s.tp}</div><div class="sl">Posições ocupadas</div></div>
+    <div class="sc"><div class="sn">${s.v}</div><div class="sl">Voluntários únicos</div></div>
+    <div class="sc" style="cursor:pointer" onclick="editMembros()" title="Clique para atualizar">
+      <div class="sn">${MEMBROS||'—'}</div><div class="sl">Total de Membros ✎</div>
+      ${volPct!==null?`<div style="font-size:10px;color:var(--accent);margin-top:2px">${volPct}% servindo</div>`:''}
+    </div>
+    <div class="sc"><div class="sn" style="font-size:15px">${fmt(s.bg)}</div><div class="sl">Orçamento/mês</div></div>`;
 }
-function removeNode(tree,id){
-  tree.children=(tree.children||[]).filter(c=>c.id!==id);
-  for(let c of tree.children) removeNode(c,id);
+function editMembros(){
+  const v=prompt('Total de membros da igreja:',MEMBROS||'');
+  if(v===null)return;
+  const n=parseInt(v);
+  if(!isNaN(n)&&n>=0){MEMBROS=n;localStorage.setItem('mosaico_membros',n);}
+  drawStats();
 }
-function genId(){return 'n'+Date.now().toString(36)}
-function fmt(n){return n?'R$ '+Number(n).toLocaleString('pt-BR'):'—'}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-
-function getAllVolunteers(){
-  const set=new Set();
-  function walk(n){
-    for(let p of (n.positions||[])) for(let v of (p.volunteers||[])) if(v.trim()) set.add(v.trim());
-    for(let c of (n.children||[])) walk(c);
+// ═══════════ TREE ═══════════
+function draw(){
+  const q=document.getElementById('q').value;
+  const r=document.getElementById('cr');r.innerHTML='';
+  r.appendChild(branch(D,q,true));
+  drawStats();
+}
+function branch(n,q,root=false){
+  const b=document.createElement('div');b.className='tb';
+  b.appendChild(card(n,root));
+  const ch=(n.children||[]).filter(c=>nv(c,q));
+  if(ch.length&&!CS[n.id]){
+    const d=document.createElement('div');d.className='tcd';b.appendChild(d);
+    const lv=document.createElement('div');lv.className='tc';
+    ch.forEach(c=>lv.appendChild(branch(c,q)));
+    b.appendChild(lv);
   }
-  walk(data);
-  return set;
+  return b;
 }
-
-function calcStats(tree){
-  let ministries=0,totalPos=0,filledPos=0,totalBudget=0;
-  function walk(n){
-    ministries++;totalBudget+=Number(n.budget)||0;
-    for(let p of (n.positions||[])){totalPos++;if(p.filled) filledPos++;}
-    for(let c of (n.children||[])) walk(c);
-  }
-  walk(tree);
-  const vols=getAllVolunteers().size;
-  return{ministries,totalPos,filledPos,totalBudget,vols};
-}
-
-function searchMatch(node,q){
-  if(!q) return true;
-  const l=q.toLowerCase();
-  if(node.name.toLowerCase().includes(l)||(node.leader||'').toLowerCase().includes(l)) return true;
-  if((node.activities||[]).some(a=>a.toLowerCase().includes(l))) return true;
-  if((node.positions||[]).some(p=>p.volunteers&&p.volunteers.some(v=>v.toLowerCase().includes(l)))) return true;
-  return false;
-}
-function nodeVisible(node,q){
-  if(!q) return true;
-  if(searchMatch(node,q)) return true;
-  return (node.children||[]).some(c=>nodeVisible(c,q));
-}
-
-// ── STATS BAR ──
-function renderStats(){
-  const s=calcStats(data);
-  const pct=s.totalPos?Math.round(s.filledPos/s.totalPos*100):0;
-  document.getElementById('stats-bar').innerHTML=`
-    <div class="stat-card"><div class="stat-num">${s.ministries}</div><div class="stat-label">Ministérios</div></div>
-    <div class="stat-card"><div class="stat-num">${s.filledPos}/${s.totalPos}</div><div class="stat-label">Posições ocupadas</div></div>
-    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Headcount</div></div>
-    <div class="stat-card"><div class="stat-num">${s.vols}</div><div class="stat-label">Voluntários únicos</div></div>
-    <div class="stat-card"><div class="stat-num" style="font-size:18px">${fmt(s.totalBudget)}</div><div class="stat-label">Orçamento/mês</div></div>
-  `;
-}
-
-// ── TREE ──
-function renderTree(){
-  const q=document.getElementById('search-input').value;
-  const root=document.getElementById('chart-root');
-  root.innerHTML='';
-  root.appendChild(buildBranch(data,q,true));
-  renderStats();
-}
-
-function buildBranch(node,q,isRoot=false){
-  const branch=document.createElement('div');
-  branch.className='tree-branch';
-  branch.appendChild(buildCard(node,isRoot));
-  const children=(node.children||[]).filter(c=>nodeVisible(c,q));
-  if(children.length&&!collapseState[node.id]){
-    const down=document.createElement('div');down.className='tree-connector-down';branch.appendChild(down);
-    const lvl=document.createElement('div');lvl.className='tree-children';
-    children.forEach(c=>lvl.appendChild(buildBranch(c,q)));
-    branch.appendChild(lvl);
-  }
-  return branch;
-}
-
-function buildCard(node,isRoot){
-  const filled=(node.positions||[]).filter(p=>p.filled).length;
-  const total=(node.positions||[]).length;
-  const hasChildren=(node.children||[]).length>0;
-  const card=document.createElement('div');
-  let cls=`node-card health-${node.health||'green'}`;
-  if(isRoot) cls+=' root-node';
-  if(node.type==='exec'||node.type==='min') cls+=' wing-node';
-  card.className=cls;card.dataset.id=node.id;
-
-  const hbar=document.createElement('div');hbar.className='node-health-bar';card.appendChild(hbar);
-
-  const tagHtml=node.type==='exec'?'<span class="node-tag tag-exec">Asa Executiva</span>':
-    node.type==='min'?'<span class="node-tag tag-min">Asa Ministerial</span>':
-    node.type==='advisory'?'<span class="node-tag tag-advisory">Comitê</span>':'';
-
-  const head=document.createElement('div');head.className='node-head';
-  head.innerHTML=`<div>
-    <div class="node-title">${esc(node.name)}</div>
-    ${node.leader?`<div class="node-leader">${esc(node.leader)}</div>`:''}
-    ${tagHtml}
-  </div><div class="health-badge" title="Saúde: ${node.health}"></div>`;
-  card.appendChild(head);
-
-  if(total>0){
-    const body=document.createElement('div');body.className='node-body';
-    const sw=document.createElement('div');sw.className='slot-wrap';
-    (node.positions||[]).forEach((p,idx)=>{
+function card(n,root){
+  const fi=(n.positions||[]).filter(p=>p.filled).length;
+  const tot=(n.positions||[]).length;
+  const hc=(n.children||[]).length>0;
+  const el=document.createElement('div');
+  let cls='nc h'+(n.health||'g').charAt(0);
+  if(root)cls+=' rn';
+  if(n.type==='exec'||n.type==='min')cls+=' wn';
+  if(n.id===SID)cls+=' act';
+  el.className=cls;el.dataset.id=n.id;
+  const hb=document.createElement('div');hb.className='nhb';el.appendChild(hb);
+  const tag=n.type==='exec'?'<span class="ntag te">Asa Executiva</span>':n.type==='min'?'<span class="ntag tm">Asa Ministerial</span>':n.type==='adv'?'<span class="ntag tc2">Comitê</span>':'';
+  const nh=document.createElement('div');nh.className='nh';
+  nh.innerHTML='<div><div class="nt">'+esc(n.name)+'</div>'+(n.leader?'<div class="nl">'+esc(n.leader)+'</div>':'')+tag+'</div><div class="hbd"></div>';
+  el.appendChild(nh);
+  if(tot>0){
+    const nb=document.createElement('div');nb.className='nb';
+    const sw=document.createElement('div');sw.className='slw';
+    (n.positions||[]).forEach((p,i)=>{
       const s=document.createElement('div');
-      s.className=`slot ${p.filled?'filled':'vacant'}`;
-      s.title=`${p.name} — clique para detalhes`;
-      s.addEventListener('click',e=>{e.stopPropagation();openPosModal(node.id,idx);});
+      s.className='slot '+(p.filled?'fi':'va');
+      s.title=p.name;
+      s.addEventListener('click',e=>{e.stopPropagation();openPV(n.id,i);});
       sw.appendChild(s);
     });
-    body.appendChild(sw);
-    const sl=document.createElement('div');sl.className='slot-label';sl.textContent=`${filled}/${total} posições`;
-    body.appendChild(sl);
-    card.appendChild(body);
+    nb.appendChild(sw);
+    const sl=document.createElement('div');sl.className='sll';sl.textContent=fi+'/'+tot+' posições';
+    nb.appendChild(sl);el.appendChild(nb);
   }
-
-  const footer=document.createElement('div');footer.className='node-footer';footer.innerHTML='<span></span>';
-  if(hasChildren){
-    const tb=document.createElement('button');tb.className='toggle-btn';
-    tb.title=collapseState[node.id]?'Expandir':'Recolher';
-    tb.textContent=collapseState[node.id]?'▶':'▼';
-    tb.addEventListener('click',e=>{e.stopPropagation();collapseState[node.id]=!collapseState[node.id];renderTree();});
-    footer.appendChild(tb);
+  const nf=document.createElement('div');nf.className='nf';nf.innerHTML='<span></span>';
+  if(hc){
+    const tb=document.createElement('button');tb.className='tbtn';
+    tb.textContent=CS[n.id]?'▶':'▼';
+    tb.addEventListener('click',e=>{e.stopPropagation();CS[n.id]=!CS[n.id];draw();});
+    nf.appendChild(tb);
   }
-  card.appendChild(footer);
-  card.addEventListener('click',()=>openViewModal(node.id));
-  return card;
+  el.appendChild(nf);
+  el.addEventListener('click',()=>openSB(n.id));
+  return el;
 }
-
-// ── VIEW MODAL (ministério) ──
-function openViewModal(id){
-  currentViewId=id;
-  const node=findNode(data,id);if(!node) return;
-  document.getElementById('vm-title').textContent=node.name;
-  document.getElementById('vm-subtitle').textContent=node.leader?`Líder: ${node.leader}`:'';
+// ═══════════ SIDEBAR ═══════════
+function openSB(id){
+  SID=id;
+  document.getElementById('sb').classList.add('open');
+  if(window.innerWidth>700)document.getElementById('cv').classList.add('sb-open');
+  renderSB(id,STAB);draw();
+}
+function closeSB(){
+  SID=null;
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('cv').classList.remove('sb-open');
+  draw();
+}
+function setTab(tab,el){
+  STAB=tab;
+  document.querySelectorAll('.sbtab').forEach(t=>t.classList.remove('act'));
+  if(el)el.classList.add('act');
+  if(SID)renderSB(SID,tab);
+}
+function renderSB(id,tab){
+  const n=fn(D,id);if(!n)return;
+  const path=gp(D,id)||[];
+  document.getElementById('sbc').innerHTML=path.map((p,i)=>
+    i===path.length-1?'<span class="sbc-item cur">'+esc(p.name)+'</span>':
+    '<span class="sbc-item" onclick="openSB(\''+p.id+'\')">'+esc(p.name)+'</span><span class="sbc-sep">›</span>'
+  ).join('')+'<span style="margin-left:auto"><button class="sbcl" onclick="closeSB()">✕</button></span>';
   const hl={green:'🟢 Saudável',amber:'🟡 Atenção',red:'🔴 Crítico'};
+  document.getElementById('sbh').className='sbh h'+(n.health||'g').charAt(0);
+  document.getElementById('sbh').innerHTML='<div class="sbt-row"><div class="sbt">'+esc(n.name)+'</div></div>'+(n.leader?'<div class="sbl">👤 '+esc(n.leader)+'</div>':'')+'<div class="sbhr"><div class="sbhd"></div><span class="sbhl">'+hl[n.health||'green']+(n.budget?' · '+fmt(n.budget)+'/mês':'')+'</span></div>';
+  const tabs=[['proc','⚡ Processos'],['pos','👥 Posições'],['vol','🙋 Voluntários'],['ativ','📋 Atividades'],['cal','📅 Calendário'],['edit','✏️ Editar']];
+  document.getElementById('sbt').innerHTML=tabs.map(([k,l])=>'<button class="sbtab'+(STAB===k?' act':'')+'" onclick="setTab(\''+k+'\',this)">'+l+'</button>').join('');
+  const body=document.getElementById('sbb');
+  if(tab==='proc')body.innerHTML=tabProc(n);
+  else if(tab==='pos')body.innerHTML=tabPos(n);
+  else if(tab==='vol')body.innerHTML=tabVol(n);
+  else if(tab==='ativ')body.innerHTML=tabAtiv(n);
+  else if(tab==='cal')body.innerHTML=tabCal(n);
+  else if(tab==='edit')body.innerHTML=tabEdit(n);
+}
+function tabProc(n){
+  const pr=n.processes||[];
+  const steps=pr.map((p,i)=>'<div class="proc-step"><div class="ps-num">'+(i+1)+'</div><div class="ps-cnt"><div class="ps-ttl">'+esc(p.title)+'</div>'+(p.desc?'<div class="ps-dsc">'+esc(p.desc)+'</div>':'')+(p.resp?'<div class="ps-rsp">👤 '+esc(p.resp)+'</div>':'')+'</div><div class="ps-acts"><button class="ps-btn" onclick="editStep(\''+n.id+'\','+i+')">✏️</button><button class="ps-btn" onclick="delStep(\''+n.id+'\','+i+')">✕</button></div></div>').join('');
+  return '<div class="sec"><span class="sec-lbl">Fluxo de Processos'+(pr.length?' ('+pr.length+' etapas)':'')+'</span>'+(pr.length?'<div class="proc-list">'+steps+'</div>':'<div style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">Nenhum processo mapeado. Adicione abaixo.</div>')+'</div><div class="add-proc"><span class="sec-lbl">Nova Etapa</span><input class="fi-inp" id="nst" placeholder="Nome da etapa"/><input class="fi-inp" id="nsd" placeholder="Descrição (opcional)"/><input class="fi-inp" id="nsr" placeholder="Responsável (opcional)" style="margin-bottom:8px"/><button class="btn btn-p btn-sm" style="width:100%" onclick="addStep(\''+n.id+'\')">+ Adicionar etapa</button></div>';
+}
+function addStep(nid){
+  const n=fn(D,nid);if(!n)return;
+  const t=document.getElementById('nst').value.trim();if(!t)return;
+  if(!n.processes)n.processes=[];
+  n.processes.push({title:t,desc:document.getElementById('nsd').value.trim(),resp:document.getElementById('nsr').value.trim()});
+  renderSB(nid,'proc');
+}
+function delStep(nid,i){const n=fn(D,nid);if(!n)return;n.processes.splice(i,1);renderSB(nid,'proc');}
+function editStep(nid,i){
+  const n=fn(D,nid);if(!n)return;const p=n.processes[i];
+  const t=prompt('Nome:',p.title);if(t===null)return;
+  const d=prompt('Descrição:',p.desc||'');const r=prompt('Responsável:',p.resp||'');
+  p.title=t||p.title;p.desc=d||'';p.resp=r||'';renderSB(nid,'proc');
+}
+function tabPos(n){
+  const pos=n.positions||[];
+  if(!pos.length)return '<div style="font-size:13px;color:var(--text3);font-style:italic;padding:8px 0">Nenhuma posição cadastrada.</div>';
+  return '<div class="sec"><span class="sec-lbl">Posições ('+pos.filter(p=>p.filled).length+'/'+pos.length+' ocupadas)</span><div class="ps-list">'+pos.map((p,i)=>'<div class="ps-item'+(p.filled?' fi':'')+'" onclick="openPV(\''+n.id+'\','+i+')"><div class="ps-name">'+esc(p.name)+'</div><div class="ps-meta"><span class="ps-st'+(p.filled?' fi':'')+'">'+( p.filled?'● Ocupada':'○ Vaga')+'</span>'+(( p.volunteers||[]).length?'<span style="font-size:10px;color:var(--text3)">· '+(p.volunteers||[]).length+' vol.</span>':'')+'</div>'+(p.successor?'<div style="font-size:10px;color:var(--amber);margin-top:3px">Suc.: '+esc(p.successor)+'</div>':'')+'</div>').join('')+'</div><div style="font-size:11px;color:var(--text3);margin-top:6px;font-style:italic">Clique para ver Job Description.</div></div>';
+}
+function tabVol(n){
+  const vm={};function c(x){for(let p of(x.positions||[]))for(let v of(p.volunteers||[])){if(!v.trim()||v==='equipe')continue;if(!vm[v])vm[v]=[];vm[v].push(p.name);}for(let ch of(x.children||[]))c(ch);}c(n);
+  const names=Object.keys(vm).sort();
+  if(!names.length)return '<div style="font-size:13px;color:var(--text3);font-style:italic;padding:8px 0">Nenhum voluntário cadastrado.</div>';
+  return '<div class="sec"><span class="sec-lbl">Voluntários ('+names.length+')</span><div class="vl-list">'+names.map(v=>'<div class="vl-item"><div class="vl-av">'+v.charAt(0).toUpperCase()+'</div><div><div class="vl-name">'+esc(v)+'</div><div class="vl-pos">'+vm[v].join(', ')+'</div></div></div>').join('')+'</div></div>';
+}
+function tabAtiv(n){
+  const ac=n.activities||[];const sk=n.skills||[];
+  return (ac.length?'<div class="sec"><span class="sec-lbl">Atividades</span>'+ac.map(a=>'<div class="act-item">'+esc(a)+'</div>').join('')+'</div>':'')+(sk.length?'<div class="sec"><span class="sec-lbl">Competências</span><div class="tag-row">'+sk.map(s=>'<span class="tag">'+esc(s)+'</span>').join('')+'</div></div>':'')+'<div class="sec"><span class="sec-lbl">Ações</span><div style="display:flex;flex-direction:column;gap:6px"><button class="btn btn-sm" onclick="openAdd(\''+n.id+'\')">+ Adicionar filho</button><button class="btn btn-sm" style="color:var(--red)" onclick="delNode(\''+n.id+'\')">🗑 Remover ministério</button></div></div>';
+}
+// ═══════════ CALENDAR ═══════════
+const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const WDAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const WDAYSFULL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
 
-  const posHtml=(node.positions||[]).length?`<div class="modal-section">
-    <div class="ms-label">Posições — clique em uma para ver o Job Description</div>
-    <div class="positions-grid">
-      ${node.positions.map((p,i)=>`
-        <div class="pos-item ${p.filled?'filled':''}" onclick="openPosModal('${id}',${i})">
-          <div class="pos-name">${esc(p.name)}</div>
-          <div class="pos-status">${p.filled?'Ocupada':'Vaga aberta'}</div>
-          ${(p.volunteers||[]).length?`<div class="pos-vols">${p.volunteers.length} voluntário(s)</div>`:''}
-          ${p.successor?`<div class="pos-successor">Suc.: ${esc(p.successor)}</div>`:''}
+function tabCal(n){
+  const events=n.calEvents||[];
+  const byMonth={};
+  events.forEach((e,i)=>{
+    const m=e.month||0;
+    if(!byMonth[m])byMonth[m]=[];
+    byMonth[m].push({...e,_idx:i});
+  });
+  const evRows=Object.keys(byMonth).sort((a,b)=>Number(a)-Number(b)).map(m=>`
+    <div style="margin-bottom:12px">
+      <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em">${MONTHS[m]}</div>
+      ${byMonth[m].sort((a,b)=>(a.day||0)-(b.day||0)).map(e=>`
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;margin-bottom:5px">
+          <div style="min-width:36px;text-align:center;background:var(--bg4);border-radius:6px;padding:4px 2px;flex-shrink:0">
+            <div style="font-size:15px;font-weight:700;color:var(--text);line-height:1">${e.day||'—'}</div>
+            <div style="font-size:9px;color:var(--text3)">${e.wday!==undefined?WDAYS[e.wday]:''}</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:500">${esc(e.title)}</div>
+            ${e.desc?`<div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(e.desc)}</div>`:''}
+            ${e.resp?`<div style="font-size:10px;color:var(--accent);margin-top:3px">👤 ${esc(e.resp)}</div>`:''}
+            <div style="font-size:10px;color:var(--text3);margin-top:2px">${e.recur?'🔁 Recorrente':'📌 Único'}</div>
+          </div>
+          <button class="ps-btn" onclick="delCalEvent('${n.id}',${e._idx})" title="Remover">✕</button>
         </div>`).join('')}
+    </div>`).join('');
+
+  return `<div class="sec">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span class="sec-lbl" style="margin-bottom:0">Calendário ${events.length?'('+events.length+' eventos)':''}</span>
+      <button class="btn btn-sm" onclick="openCalView()">📅 Ver calendário</button>
     </div>
-    <div class="pos-item-hint">Clique em qualquer posição para ver detalhes, adicionar voluntários e editar o Job Description.</div>
-  </div>`:'';
-
-  const actHtml=(node.activities||[]).length?`<div class="modal-section">
-    <div class="ms-label">Atividades Principais</div>
-    <ul class="ms-list">${node.activities.map(a=>`<li>${esc(a)}</li>`).join('')}</ul>
-  </div>`:'';
-
-  const skillHtml=(node.skills||[]).length?`<div class="modal-section">
-    <div class="ms-label">Competências do Ministério</div>
-    <div class="tag-row">${node.skills.map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</div>
-  </div>`:'';
-
-  document.getElementById('vm-body').innerHTML=`
-    <div class="modal-section" style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="ms-label">Saúde</div><div style="margin-top:4px;font-size:14px">${hl[node.health||'green']}</div></div>
-      <div><div class="ms-label">Orçamento</div><div style="margin-top:4px;font-size:14px;font-family:var(--mono)">${fmt(node.budget)}</div></div>
+    ${events.length?evRows:'<div style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">Nenhum evento cadastrado.</div>'}
+  </div>
+  <div class="add-proc">
+    <span class="sec-lbl">Novo Evento</span>
+    <input class="fi-inp" id="ce-ttl" placeholder="Nome da atividade *"/>
+    <input class="fi-inp" id="ce-dsc" placeholder="Descrição (opcional)"/>
+    <input class="fi-inp" id="ce-rsp" placeholder="Responsável (opcional)"/>
+    <div style="display:flex;gap:8px;margin-bottom:6px">
+      <select class="fi-sel" id="ce-mon" style="flex:2">
+        ${MONTHS.map((m,i)=>`<option value="${i}">${m}</option>`).join('')}
+      </select>
+      <input class="fi-inp" id="ce-day" type="number" min="1" max="31" placeholder="Dia" style="flex:1"/>
     </div>
-    ${actHtml}${posHtml}${skillHtml}`;
-
-  document.getElementById('vm-edit-btn').onclick=()=>{closeModal('view-overlay');openEditModal(id)};
-  document.getElementById('vm-delete-btn').onclick=()=>deleteNode(id);
-  document.getElementById('vm-add-child-btn').onclick=()=>{closeModal('view-overlay');openAddModal(id)};
-  document.getElementById('view-overlay').style.display='flex';
-}
-
-// ── POSITION MODAL (Job Description) ──
-function openPosModal(nodeId,posIdx){
-  closeModal('view-overlay');
-  const node=findNode(data,nodeId);if(!node) return;
-  const p=node.positions[posIdx];if(!p) return;
-  currentPosRef={nodeId,posIdx};
-
-  document.getElementById('pm-title').textContent=p.name;
-  document.getElementById('pm-subtitle').textContent=`${node.name} · ${p.filled?'Ocupada':'Vaga aberta'}`;
-
-  const jdHtml=p.jd?`<div class="modal-section">
-    <div class="ms-label">Job Description</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap">${esc(p.jd)}</div>
-  </div>`:'<div class="modal-section" style="color:var(--text3);font-size:13px;font-style:italic">Nenhum Job Description cadastrado. Clique em "Editar posição" para adicionar.</div>';
-
-  const skillHtml=(p.skills||[]).length?`<div class="modal-section">
-    <div class="ms-label">Competências Necessárias</div>
-    <div class="tag-row">${p.skills.map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</div>
-  </div>`:'';
-
-  const hoursHtml=p.hours?`<div><div class="ms-label">Carga horária</div><div style="font-size:14px;font-family:var(--mono);margin-top:4px">${p.hours}h/semana</div></div>`:'';
-  const sucHtml=p.successor?`<div><div class="ms-label">Sucessor</div><div style="font-size:14px;color:var(--amber);margin-top:4px">${esc(p.successor)}</div></div>`:'';
-
-  const volsHtml=`<div class="modal-section">
-    <div class="ms-label">Voluntários nesta posição (${(p.volunteers||[]).length})</div>
-    ${(p.volunteers||[]).length?`<div class="vol-list">${p.volunteers.map(v=>`
-      <div class="vol-item"><span class="vol-name">${esc(v)}</span></div>`).join('')}</div>`
-    :'<div style="font-size:13px;color:var(--text3);font-style:italic">Nenhum voluntário alocado. Edite para adicionar.</div>'}
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <select class="fi-sel" id="ce-wday" style="flex:2">
+        <option value="">Dia da semana</option>
+        ${WDAYSFULL.map((w,i)=>`<option value="${i}">${w}</option>`).join('')}
+      </select>
+      <select class="fi-sel" id="ce-rec" style="flex:1">
+        <option value="false">📌 Único</option>
+        <option value="true">🔁 Recorrente</option>
+      </select>
+    </div>
+    <button class="btn btn-p btn-sm" style="width:100%" onclick="addCalEvent('${n.id}')">+ Adicionar evento</button>
   </div>`;
-
-  document.getElementById('pm-body').innerHTML=`
-    ${(hoursHtml||sucHtml)?`<div class="modal-section" style="display:flex;gap:2rem">${hoursHtml}${sucHtml}</div>`:''}
-    ${jdHtml}${skillHtml}${volsHtml}`;
-
-  document.getElementById('pm-edit-btn').onclick=()=>{closeModal('pos-overlay');openPosEditModal(nodeId,posIdx)};
-  document.getElementById('pos-overlay').style.display='flex';
 }
 
-// ── POSITION EDIT MODAL ──
-function openPosEditModal(nodeId,posIdx){
-  const node=findNode(data,nodeId);if(!node) return;
-  const p=node.positions[posIdx];if(!p) return;
-  currentPosRef={nodeId,posIdx};
+function addCalEvent(nid){
+  const n=fn(D,nid);if(!n)return;
+  const t=document.getElementById('ce-ttl').value.trim();if(!t)return;
+  const dayVal=document.getElementById('ce-day').value;
+  const wdayVal=document.getElementById('ce-wday').value;
+  if(!n.calEvents)n.calEvents=[];
+  n.calEvents.push({
+    title:t,
+    desc:document.getElementById('ce-dsc').value.trim(),
+    resp:document.getElementById('ce-rsp').value.trim(),
+    month:parseInt(document.getElementById('ce-mon').value),
+    day:dayVal?parseInt(dayVal):null,
+    wday:wdayVal!==''?parseInt(wdayVal):undefined,
+    recur:document.getElementById('ce-rec').value==='true'
+  });
+  renderSB(nid,'cal');
+}
 
-  document.getElementById('pem-title').textContent='Editar: '+p.name;
-  document.getElementById('pem-node-id').value=nodeId;
-  document.getElementById('pem-pos-idx').value=posIdx;
-  document.getElementById('pem-name').value=p.name;
-  document.getElementById('pem-filled').value=p.filled?'true':'false';
-  document.getElementById('pem-jd').value=p.jd||'';
-  document.getElementById('pem-skills').value=(p.skills||[]).join(', ');
-  document.getElementById('pem-successor').value=p.successor||'';
-  document.getElementById('pem-hours').value=p.hours||'';
+function delCalEvent(nid,idx){
+  const n=fn(D,nid);if(!n)return;
+  n.calEvents.splice(idx,1);
+  renderSB(nid,'cal');
+}
 
-  const vl=document.getElementById('pem-vols-list');
-  vl.innerHTML='';
+// ── CALENDAR VIEW MODAL (consolidado) ──
+function getAllCalEvents(){
+  const evs=[];
+  function walk(n){
+    (n.calEvents||[]).forEach(e=>evs.push({...e,ministry:n.name,ministryId:n.id}));
+    (n.children||[]).forEach(c=>walk(c));
+  }
+  walk(D);
+  return evs;
+}
+
+let CAL_VIEW_MONTH=new Date().getMonth();
+let CAL_VIEW_YEAR=new Date().getFullYear();
+
+function openCalView(){
+  CAL_VIEW_MONTH=new Date().getMonth();
+  CAL_VIEW_YEAR=new Date().getFullYear();
+  document.getElementById('cal-ov').style.display='flex';
+  renderCalView();
+}
+
+function renderCalView(){
+  const evs=getAllCalEvents();
+  const m=CAL_VIEW_MONTH, y=CAL_VIEW_YEAR;
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+
+  // events this month (by day)
+  const byDay={};
+  evs.forEach(e=>{
+    if(e.month!==m)return;
+    const day=e.day||0;
+    if(!byDay[day])byDay[day]=[];
+    byDay[day].push(e);
+  });
+  // recurring events (no specific day)
+  const noDayEvs=(byDay[0]||[]);
+
+  // build grid
+  let cells='';
+  // empty cells before first day
+  for(let i=0;i<firstDay;i++) cells+=`<div class="cal-cell cal-empty"></div>`;
+  // day cells
+  for(let d=1;d<=daysInMonth;d++){
+    const dayEvs=byDay[d]||[];
+    const isToday=d===new Date().getDate()&&m===new Date().getMonth()&&y===new Date().getFullYear();
+    cells+=`<div class="cal-cell${isToday?' cal-today':''}">
+      <div class="cal-day-num${isToday?' cal-today-num':''}">${d}</div>
+      ${dayEvs.slice(0,3).map(e=>`<div class="cal-ev" title="${esc(e.title)} — ${esc(e.ministry)}">${esc(e.title.length>14?e.title.slice(0,13)+'…':e.title)}</div>`).join('')}
+      ${dayEvs.length>3?`<div style="font-size:9px;color:var(--text3);padding:1px 3px">+${dayEvs.length-3} mais</div>`:''}
+    </div>`;
+  }
+
+  // events list for this month
+  const allThisMonth=evs.filter(e=>e.month===m).sort((a,b)=>(a.day||0)-(b.day||0));
+  const listRows=allThisMonth.length
+    ? allThisMonth.map(e=>`
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-bottom:1px solid var(--border)">
+          <div style="min-width:40px;text-align:center;flex-shrink:0">
+            <div style="font-size:16px;font-weight:700;color:var(--text)">${e.day||'—'}</div>
+            <div style="font-size:9px;color:var(--text3)">${e.wday!==undefined?WDAYS[e.wday]:''}</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:500">${esc(e.title)}</div>
+            <div style="font-size:11px;color:var(--accent);margin-top:1px">${esc(e.ministry)}</div>
+            ${e.desc?`<div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(e.desc)}</div>`:''}
+            ${e.resp?`<div style="font-size:10px;color:var(--text3);margin-top:2px">👤 ${esc(e.resp)}</div>`:''}
+          </div>
+          <div style="font-size:10px;color:var(--text3);flex-shrink:0">${e.recur?'🔁':'📌'}</div>
+        </div>`).join('')
+    : '<div style="padding:1rem;text-align:center;font-size:13px;color:var(--text3)">Nenhum evento neste mês.</div>';
+
+  document.getElementById('cal-month-title').textContent=MONTHS[m]+' '+y;
+  document.getElementById('cal-grid').innerHTML=cells;
+  document.getElementById('cal-list').innerHTML=listRows;
+}
+
+function calNav(dir){
+  CAL_VIEW_MONTH+=dir;
+  if(CAL_VIEW_MONTH<0){CAL_VIEW_MONTH=11;CAL_VIEW_YEAR--;}
+  if(CAL_VIEW_MONTH>11){CAL_VIEW_MONTH=0;CAL_VIEW_YEAR++;}
+  renderCalView();
+}
+
+function tabEdit(n){
+  return '<div class="f-grp"><label class="f-lbl">Nome</label><input class="fi-inp" id="se-nm" value="'+esc(n.name)+'"/></div><div class="f-grp"><label class="f-lbl">Líder</label><input class="fi-inp" id="se-ld" value="'+esc(n.leader||'')+'"/></div><div class="fr"><div><label class="f-lbl">Saúde</label><select class="fi-sel" id="se-hl"><option value="green" '+(n.health==='green'?'selected':'')+'>🟢 Saudável</option><option value="amber" '+(n.health==='amber'?'selected':'')+'>🟡 Atenção</option><option value="red" '+(n.health==='red'?'selected':'')+'>🔴 Crítico</option></select></div><div><label class="f-lbl">Orçamento R$/mês</label><input class="fi-inp" id="se-bg" type="number" value="'+(n.budget||'')+'"/></div></div><div class="f-grp"><label class="f-lbl">Atividades (uma por linha)</label><textarea class="fi-ta" id="se-ac">'+esc((n.activities||[]).join('\n'))+'</textarea></div><div class="f-grp"><label class="f-lbl">Competências (por vírgula)</label><input class="fi-inp" id="se-sk" value="'+esc((n.skills||[]).join(', '))+'"/></div><button class="btn btn-p btn-sm" style="width:100%;margin-top:4px" onclick="saveEdit(\''+n.id+'\')">Salvar</button>';
+}
+function saveEdit(id){
+  const n=fn(D,id);if(!n)return;
+  n.name=document.getElementById('se-nm').value.trim()||n.name;
+  n.leader=document.getElementById('se-ld').value.trim();
+  n.health=document.getElementById('se-hl').value;
+  n.budget=Number(document.getElementById('se-bg').value)||0;
+  n.activities=document.getElementById('se-ac').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  n.skills=document.getElementById('se-sk').value.split(',').map(s=>s.trim()).filter(Boolean);
+  draw();renderSB(id,'edit');
+}
+function delNode(id){
+  if(!confirm('Remover este ministério?'))return;
+  if(D.id===id){alert('Não é possível remover o nó raiz.');return;}
+  closeSB();rn(D,id);draw();
+}
+// ═══════════ POSITION MODALS ═══════════
+function openPV(nid,idx){
+  const n=fn(D,nid);if(!n)return;
+  const p=n.positions[idx];if(!p)return;
+  PREF={nid,idx};
+  document.getElementById('pvt').textContent=p.name;
+  document.getElementById('pvs').textContent=n.name+' · '+(p.filled?'Ocupada':'Vaga');
+  const jd=p.jd?'<div class="msec"><span class="mlbl">Job Description</span><div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap">'+esc(p.jd)+'</div></div>':'<div style="font-size:13px;color:var(--text3);font-style:italic">Sem JD. Clique em Editar para adicionar.</div>';
+  const sk=(p.skills||[]).length?'<div class="msec"><span class="mlbl">Competências</span><div class="tag-row">'+p.skills.map(s=>'<span class="tag">'+esc(s)+'</span>').join('')+'</div></div>':'';
+  const vl='<div class="msec"><span class="mlbl">Voluntários ('+(p.volunteers||[]).length+')</span>'+((p.volunteers||[]).length?'<div class="tag-row">'+p.volunteers.map(v=>'<span class="tag">'+esc(v)+'</span>').join('')+'</div>':'<div style="font-size:12px;color:var(--text3);font-style:italic">Nenhum.</div>')+'</div>';
+  document.getElementById('pvb').innerHTML=jd+sk+vl;
+  document.getElementById('pve').onclick=()=>{cm('pvm');openPE(nid,idx);};
+  document.getElementById('pvm').style.display='flex';
+}
+function openPE(nid,idx){
+  const n=fn(D,nid);if(!n)return;
+  const p=n.positions[idx];if(!p)return;
+  PREF={nid,idx};
+  document.getElementById('pet').textContent='Editar: '+p.name;
+  document.getElementById('pe-nid').value=nid;
+  document.getElementById('pe-idx').value=idx;
+  document.getElementById('pe-nm').value=p.name;
+  document.getElementById('pe-fi').value=p.filled?'true':'false';
+  document.getElementById('pe-jd').value=p.jd||'';
+  document.getElementById('pe-sk').value=(p.skills||[]).join(', ');
+  document.getElementById('pe-su').value=p.successor||'';
+  document.getElementById('pe-hr').value=p.hours||'';
+  const vl=document.getElementById('pe-vl');vl.innerHTML='';
   (p.volunteers||[]).forEach((v,i)=>{
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px';
-    row.innerHTML=`<span style="font-size:13px">${esc(v)}</span><button onclick="removePosVol(${i})" class="vol-remove" title="Remover">✕</button>`;
+    const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;margin-bottom:5px';
+    row.innerHTML='<span style="font-size:13px">'+esc(v)+'</span><button onclick="rmVol('+i+')" style="border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:14px">✕</button>';
     vl.appendChild(row);
   });
-
-  document.getElementById('pem-vol-input').value='';
-  document.getElementById('pos-edit-overlay').style.display='flex';
+  document.getElementById('pe-vi').value='';
+  document.getElementById('pem').style.display='flex';
 }
-
-function removePosVol(idx){
-  const nodeId=document.getElementById('pem-node-id').value;
-  const posIdx=parseInt(document.getElementById('pem-pos-idx').value);
-  const node=findNode(data,nodeId);
-  node.positions[posIdx].volunteers.splice(idx,1);
-  openPosEditModal(nodeId,posIdx);
+function rmVol(i){const n=fn(D,PREF.nid);n.positions[PREF.idx].volunteers.splice(i,1);openPE(PREF.nid,PREF.idx);}
+function addVol(){
+  const inp=document.getElementById('pe-vi');const v=inp.value.trim();if(!v)return;
+  const p=fn(D,PREF.nid).positions[PREF.idx];
+  if(!p.volunteers)p.volunteers=[];p.volunteers.push(v);inp.value='';openPE(PREF.nid,PREF.idx);
 }
-
-function addVolunteerToPosForm(){
-  const nodeId=document.getElementById('pem-node-id').value;
-  const posIdx=parseInt(document.getElementById('pem-pos-idx').value);
-  const inp=document.getElementById('pem-vol-input');
-  const name=inp.value.trim();
-  if(!name) return;
-  const node=findNode(data,nodeId);
-  if(!node.positions[posIdx].volunteers) node.positions[posIdx].volunteers=[];
-  node.positions[posIdx].volunteers.push(name);
-  inp.value='';
-  openPosEditModal(nodeId,posIdx);
+function savePE(){
+  const nid=document.getElementById('pe-nid').value;
+  const idx=parseInt(document.getElementById('pe-idx').value);
+  const p=fn(D,nid).positions[idx];if(!p)return;
+  p.name=document.getElementById('pe-nm').value.trim()||p.name;
+  p.filled=document.getElementById('pe-fi').value==='true';
+  p.jd=document.getElementById('pe-jd').value;
+  p.skills=document.getElementById('pe-sk').value.split(',').map(s=>s.trim()).filter(Boolean);
+  p.successor=document.getElementById('pe-su').value.trim();
+  p.hours=Number(document.getElementById('pe-hr').value)||0;
+  cm('pem');draw();if(SID)renderSB(SID,STAB);
 }
-
-function savePosEdit(){
-  const nodeId=document.getElementById('pem-node-id').value;
-  const posIdx=parseInt(document.getElementById('pem-pos-idx').value);
-  const node=findNode(data,nodeId);if(!node) return;
-  const p=node.positions[posIdx];if(!p) return;
-  p.name=document.getElementById('pem-name').value.trim()||p.name;
-  p.filled=document.getElementById('pem-filled').value==='true';
-  p.jd=document.getElementById('pem-jd').value;
-  p.skills=document.getElementById('pem-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
-  p.successor=document.getElementById('pem-successor').value.trim();
-  p.hours=Number(document.getElementById('pem-hours').value)||0;
-  closeModal('pos-edit-overlay');
-  renderTree();
+// ═══════════ NODE EDIT MODAL ═══════════
+function openAdd(pid){
+  document.getElementById('net').textContent='Novo Ministério';
+  ['ne-id','ne-par','ne-nm','ne-ld','ne-ac','ne-sk','ne-bg'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('ne-par').value=pid||'';
+  document.getElementById('ne-hl').value='green';document.getElementById('ne-tp').value='';
+  document.getElementById('ne-pl').innerHTML='';
+  document.getElementById('nem').style.display='flex';
 }
-
-// ── NODE EDIT MODAL ──
-function openAddModal(parentId){
-  document.getElementById('em-title').textContent='Novo Ministério';
-  document.getElementById('em-id').value='';
-  document.getElementById('em-parent').value=parentId||'';
-  ['em-name','em-leader','em-activities','em-skills','em-budget'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('em-health').value='green';
-  document.getElementById('em-type').value='';
-  document.getElementById('positions-list').innerHTML='';
-  document.getElementById('edit-overlay').style.display='flex';
-}
-
-function openEditModal(id){
-  const node=findNode(data,id);if(!node) return;
-  document.getElementById('em-title').textContent='Editar: '+node.name;
-  document.getElementById('em-id').value=id;
-  document.getElementById('em-parent').value='';
-  document.getElementById('em-name').value=node.name;
-  document.getElementById('em-leader').value=node.leader||'';
-  document.getElementById('em-activities').value=(node.activities||[]).join('\n');
-  document.getElementById('em-skills').value=(node.skills||[]).join(', ');
-  document.getElementById('em-budget').value=node.budget||'';
-  document.getElementById('em-health').value=node.health||'green';
-  document.getElementById('em-type').value=node.type||'';
-  const pl=document.getElementById('positions-list');pl.innerHTML='';
-  (node.positions||[]).forEach(p=>addPositionRow(p));
-  document.getElementById('edit-overlay').style.display='flex';
-}
-
-function addPositionRow(pos){
-  const pl=document.getElementById('positions-list');
-  const row=document.createElement('div');
-  row.style.cssText='display:flex;gap:8px;align-items:center';
-  row.innerHTML=`
-    <input class="form-input pos-name-in" style="flex:2" placeholder="Nome da posição" value="${esc(pos?pos.name:'')}"/>
-    <select class="form-select pos-filled-in" style="flex:1">
-      <option value="true" ${pos&&pos.filled?'selected':''}>Ocupada</option>
-      <option value="false" ${pos&&!pos.filled?'selected':''}>Vaga</option>
-    </select>
-    <button type="button" onclick="this.parentNode.remove()" style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--red);cursor:pointer;font-size:13px">✕</button>
-  `;
+function addPR(pos){
+  const pl=document.getElementById('ne-pl');
+  const row=document.createElement('div');row.style.cssText='display:flex;gap:5px;align-items:center';
+  row.innerHTML='<input class="f-inp pn" style="flex:2" placeholder="Nome da posição" value="'+(pos?esc(pos.name):'')+'"/><select class="f-sel pf" style="flex:1"><option value="true" '+(pos&&pos.filled?'selected':'')+'>Ocupada</option><option value="false" '+(pos&&!pos.filled?'selected':'')+'>Vaga</option></select><button type="button" onclick="this.parentNode.remove()" style="padding:5px 8px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--red);cursor:pointer">✕</button>';
   pl.appendChild(row);
 }
-
-function saveNode(){
-  const id=document.getElementById('em-id').value;
-  const parentId=document.getElementById('em-parent').value;
-  const name=document.getElementById('em-name').value.trim();
-  if(!name){alert('Nome obrigatório');return;}
-  const leader=document.getElementById('em-leader').value.trim();
-  const activities=document.getElementById('em-activities').value.split('\n').map(s=>s.trim()).filter(Boolean);
-  const skills=document.getElementById('em-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
-  const budget=Number(document.getElementById('em-budget').value)||0;
-  const health=document.getElementById('em-health').value;
-  const type=document.getElementById('em-type').value;
+function saveNE(){
+  const id=document.getElementById('ne-id').value;
+  const pid=document.getElementById('ne-par').value;
+  const nm=document.getElementById('ne-nm').value.trim();if(!nm){alert('Nome obrigatório');return;}
   const positions=[];
-  document.getElementById('positions-list').querySelectorAll('div').forEach(r=>{
-    const n=r.querySelector('.pos-name-in')?.value.trim();if(!n) return;
-    positions.push({name:n,filled:r.querySelector('.pos-filled-in')?.value==='true',successor:'',jd:'',skills:[],volunteers:[],hours:0});
+  document.getElementById('ne-pl').querySelectorAll('div').forEach(r=>{
+    const n=r.querySelector('.pn')?.value.trim();if(!n)return;
+    positions.push({name:n,filled:r.querySelector('.pf')?.value==='true',successor:'',jd:'',skills:[],volunteers:[],hours:0});
   });
-  if(id){
-    const node=findNode(data,id);
-    if(node){
-      const keepPos=positions.map(np=>{
-        const existing=(node.positions||[]).find(ep=>ep.name===np.name);
-        return existing?Object.assign(existing,{filled:np.filled}):np;
-      });
-      Object.assign(node,{name,leader,activities,skills,budget,health,type,positions:keepPos});
-    }
-  } else {
-    const newNode={id:genId(),name,leader,activities,skills,budget,health,type,positions,children:[]};
-    if(parentId){const parent=findNode(data,parentId);if(parent) parent.children.push(newNode);}
-    else{data.children=data.children||[];data.children.push(newNode);}
-  }
-  closeModal('edit-overlay');renderTree();
+  const obj={name:nm,leader:document.getElementById('ne-ld').value.trim(),health:document.getElementById('ne-hl').value,type:document.getElementById('ne-tp').value,budget:Number(document.getElementById('ne-bg').value)||0,activities:document.getElementById('ne-ac').value.split('\n').map(s=>s.trim()).filter(Boolean),skills:document.getElementById('ne-sk').value.split(',').map(s=>s.trim()).filter(Boolean),positions,processes:[],children:[]};
+  if(id){const n=fn(D,id);if(n)Object.assign(n,obj);}
+  else{obj.id=gid();if(pid){const par=fn(D,pid);if(par)par.children.push(obj);}else{D.children=D.children||[];D.children.push(obj);}}
+  cm('nem');draw();
 }
-
-function deleteNode(id){
-  if(!confirm('Remover este ministério e todos os seus filhos?')) return;
-  closeModal('view-overlay');
-  if(data.id===id){alert('Não é possível remover o nó raiz.');return;}
-  removeNode(data,id);renderTree();
+// ═══════════ PRINT ═══════════
+function openPrint(){document.getElementById('pm').style.display='flex';}
+function doPrint(){
+  const mode=document.querySelector('input[name="pmd"]:checked').value;
+  const state=document.querySelector('input[name="pst"]:checked').value;
+  cm('pm');if(state==='e')expandAll();
+  document.getElementById('pd').textContent='Impresso em '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const cr=document.getElementById('cr');const prev=cr.style.transform;
+  if(mode==='f'){const sc=Math.min(1,1050/cr.scrollWidth);cr.style.transform='scale('+sc+')';cr.style.transformOrigin='top center';}
+  else{cr.style.transform='none';}
+  setTimeout(()=>{window.print();setTimeout(()=>{cr.style.transform=prev;},300);},300);
 }
-
-// ── PRINT ──
-function openPrintModal(){document.getElementById('print-overlay').style.display='flex';}
-
-function executePrint(){
-  const mode=document.querySelector('input[name="pmode"]:checked').value;
-  const state=document.querySelector('input[name="pstate"]:checked').value;
-  closeModal('print-overlay');
-  if(state==='expanded') expandAll();
-  document.getElementById('print-date').textContent='Impresso em '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-
-  if(mode==='fit'){
-    const root=document.getElementById('chart-root');
-    const W=root.scrollWidth, pageW=1050;
-    const scale=Math.min(1,pageW/W);
-    root.style.transform=`scale(${scale})`;
-    root.style.transformOrigin='top center';
-    document.body.classList.add('print-fit');
-    setTimeout(()=>{
-      window.print();
-      setTimeout(()=>{
-        root.style.transform=`scale(${zoomLevel})`;
-        document.body.classList.remove('print-fit');
-      },500);
-    },300);
-  } else {
-    const root=document.getElementById('chart-root');
-    const prev=root.style.transform;
-    root.style.transform='none';
-    setTimeout(()=>{window.print();setTimeout(()=>{root.style.transform=prev;},300);},300);
-  }
-}
-
-// ── HELPERS ──
-function closeModal(id){document.getElementById(id).style.display='none';}
-function expandAll(){collapseState={};renderTree();}
+// ═══════════ HELPERS ═══════════
+function cm(id){document.getElementById(id).style.display='none';}
+function expandAll(){CS={};draw();}
 function collapseAll(){
-  function mark(n,depth){
-    if(depth>=4) collapseState[n.id]=true;
-    (n.children||[]).forEach(c=>mark(c,depth+1));
-  }
-  mark(data,1);
-  renderTree();
+  function m(n,d){if(d>=4)CS[n.id]=true;(n.children||[]).forEach(c=>m(c,d+1));}
+  m(D,1);draw();
   setTimeout(()=>{
-    const wrap=document.getElementById("canvas-wrap");
-    const root=document.getElementById("chart-root");
-    const availW=wrap.clientWidth-64;
-    const availH=wrap.clientHeight-64;
-    const scaleW=availW/root.scrollWidth;
-    const scaleH=availH/root.scrollHeight;
-    const scale=Math.min(1,scaleW,scaleH);
-    zoomLevel=Math.round(scale*10)/10;
-    root.style.transform="scale("+zoomLevel+")";
-    document.getElementById("zoom-label").textContent=Math.round(zoomLevel*100)+"%";
+    const cr=document.getElementById('cr'),cv=document.getElementById('cv');
+    const sc=Math.min(1,(cv.clientWidth-64)/cr.scrollWidth,(cv.clientHeight-64)/cr.scrollHeight);
+    ZL=Math.round(sc*10)/10||0.5;
+    cr.style.transform='scale('+ZL+')';document.getElementById('zl').textContent=Math.round(ZL*100)+'%';
   },150);
 }
-function exportData(){
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='organograma-mosaico.json';a.click();
+function exportJSON(){
+  const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='organograma-mosaico.json';a.click();
 }
-
-function zoom(delta){
-  zoomLevel=Math.min(2,Math.max(0.3,zoomLevel+delta));
-  document.getElementById('chart-root').style.transform=`scale(${zoomLevel})`;
-  document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';
-}
-function resetZoom(){zoomLevel=1;zoom(0);}
-
-// ── PAN (mouse desktop) ──
-let isPanning=false,panStart={x:0,y:0},scrollStart={x:0,y:0};
-const cw=document.getElementById('canvas-wrap');
-cw.addEventListener('mousedown',e=>{
-  if(e.target.closest('.node-card')||e.target.closest('.btn')||e.target.closest('.toggle-btn')||e.target.closest('.slot')) return;
-  isPanning=true;cw.classList.add('panning');
-  panStart={x:e.clientX,y:e.clientY};scrollStart={x:cw.scrollLeft,y:cw.scrollTop};
-});
-document.addEventListener('mousemove',e=>{if(!isPanning) return;cw.scrollLeft=scrollStart.x-(e.clientX-panStart.x);cw.scrollTop=scrollStart.y-(e.clientY-panStart.y);});
-document.addEventListener('mouseup',()=>{isPanning=false;cw.classList.remove('panning');});
-
-// ── PINCH-TO-ZOOM (mobile) ──
-let lastTouchDist=null;
-cw.addEventListener('touchstart',e=>{
-  if(e.touches.length===2){
-    lastTouchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-    e.preventDefault();
-  }
-},{passive:false});
-cw.addEventListener('touchmove',e=>{
-  if(e.touches.length===2&&lastTouchDist!==null){
-    const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-    const delta=(dist-lastTouchDist)*0.006;
-    lastTouchDist=dist;
-    zoomLevel=Math.min(2,Math.max(0.2,zoomLevel+delta));
-    document.getElementById('chart-root').style.transform='scale('+zoomLevel+')';
-    document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';
-    e.preventDefault();
-  }
-},{passive:false});
-cw.addEventListener('touchend',()=>{lastTouchDist=null;},{passive:true});
-
-// ── MOBILE AUTO-FIT ──
-function autoFitMobile(){
-  if(window.innerWidth>768) return;
+function zm(d){ZL=Math.min(2,Math.max(0.2,ZL+d));document.getElementById('cr').style.transform='scale('+ZL+')';document.getElementById('zl').textContent=Math.round(ZL*100)+'%';}
+function zr(){ZL=1;zm(0);}
+// ═══════════ PAN + TOUCH ═══════════
+let _pan=false,_ps={x:0,y:0},_ss={x:0,y:0};
+const _cv=document.getElementById('cv');
+_cv.addEventListener('mousedown',e=>{if(e.target.closest('.nc')||e.target.closest('.btn')||e.target.closest('.tbtn')||e.target.closest('.slot'))return;_pan=true;_cv.classList.add('pan');_ps={x:e.clientX,y:e.clientY};_ss={x:_cv.scrollLeft,y:_cv.scrollTop};});
+document.addEventListener('mousemove',e=>{if(!_pan)return;_cv.scrollLeft=_ss.x-(e.clientX-_ps.x);_cv.scrollTop=_ss.y-(e.clientY-_ps.y);});
+document.addEventListener('mouseup',()=>{_pan=false;_cv.classList.remove('pan');});
+let _td=null;
+_cv.addEventListener('touchstart',e=>{if(e.touches.length===2){_td=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);e.preventDefault();}},{passive:false});
+_cv.addEventListener('touchmove',e=>{if(e.touches.length===2&&_td!==null){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);ZL=Math.min(2,Math.max(0.2,ZL+(d-_td)*0.006));_td=d;document.getElementById('cr').style.transform='scale('+ZL+')';document.getElementById('zl').textContent=Math.round(ZL*100)+'%';e.preventDefault();}},{passive:false});
+_cv.addEventListener('touchend',()=>{_td=null;},{passive:true});
+function autofit(){
+  if(window.innerWidth>768)return;
   setTimeout(()=>{
-    const root=document.getElementById('chart-root');
-    const wrap=document.getElementById('canvas-wrap');
-    root.style.transform='scale(1)';
-    const cW=root.scrollWidth, aW=wrap.clientWidth-24;
-    const scale=Math.min(1, aW/cW);
-    zoomLevel=Math.round(scale*10)/10||0.5;
-    root.style.transform='scale('+zoomLevel+')';
-    root.style.transformOrigin='top left';
-    document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';
+    const cr=document.getElementById('cr'),cv=document.getElementById('cv');
+    cr.style.transform='scale(1)';
+    const sc=Math.min(1,(cv.clientWidth-20)/cr.scrollWidth);
+    ZL=Math.round(sc*10)/10||0.5;
+    cr.style.transform='scale('+ZL+')';cr.style.transformOrigin='top left';
+    document.getElementById('zl').textContent=Math.round(ZL*100)+'%';
   },300);
 }
-window.addEventListener('resize', autoFitMobile);
-
-renderTree();
-// Start collapsed on mobile for better overview
-if(window.innerWidth<=768){ collapseAll(); }
-else { autoFitMobile(); }
+window.addEventListener('resize',autofit);
+// ═══════════ INIT ═══════════
+draw();
+if(window.innerWidth<=768)collapseAll();else autofit();
 </script>
+<!-- CALENDAR VIEW MODAL -->
+<div class="ov" id="cal-ov" style="display:none" onclick="cm('cal-ov')">
+<div class="mo" style="max-width:680px;max-height:92vh" onclick="event.stopPropagation()">
+  <div class="mh" style="flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="btn btn-sm" onclick="calNav(-1)">‹</button>
+      <div class="mt" id="cal-month-title"></div>
+      <button class="btn btn-sm" onclick="calNav(1)">›</button>
+    </div>
+    <button class="mcl" onclick="cm('cal-ov')">✕</button>
+  </div>
+  <div style="padding:.75rem 1rem;overflow-y:auto">
+    <!-- Grid header -->
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px">
+      <div style="text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px">Dom</div>
+      <div style="text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px">Seg</div>
+      <div style="text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px">Ter</div>
+      <div style="text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px">Qua</div>
+      <div style="text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px">Qui</div>
+      <div style="text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px">Sex</div>
+      <div style="text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px">Sáb</div>
+    </div>
+    <!-- Calendar grid -->
+    <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:1rem"></div>
+    <!-- Event list -->
+    <div style="border-top:1px solid var(--border);padding-top:.75rem">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.5rem">Eventos do mês — todos os ministérios</div>
+      <div id="cal-list"></div>
+    </div>
+  </div>
+</div></div>
 </body>
 </html>
